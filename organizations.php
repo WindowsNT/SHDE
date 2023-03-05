@@ -52,7 +52,7 @@ if (array_key_exists("c",$_POST))
         // Create
         if ($u->superadmin)
         {
-            QQ("INSERT INTO ORGANIZATIONS (NAME,NAMEEN,SHDECODE,SHDECLIENT,SHDESECRET,SHDECLIENT2,SHDESECRET2,SHDEPRODUCTION) VALUES (?,?,?,?,?,?,?)",array($_POST['name'],$_POST['nameen'],$_POST['code'],$_POST['client'],$_POST['secret'],$_POST['client2'],$_POST['secret2'],$_POST['prod']));
+            QQ("INSERT INTO ORGANIZATIONS (NAME,NAMEEN,SHDECODE,SHDECLIENT,SHDESECRET,SHDECLIENT2,SHDESECRET2,SHDEPRODUCTION) VALUES (?,?,?,?,?,?,?,?)",array($_POST['name'],$_POST['nameen'],$_POST['code'],$_POST['client'],$_POST['secret'],$_POST['client2'],$_POST['secret2'],$_POST['prod']));
         }
     }
     else

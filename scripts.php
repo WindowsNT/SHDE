@@ -1,5 +1,6 @@
 <?php
 header("Content-Type: text/javascript");
+$mobile = 0;
 ?>
 
 function gotop(q)
