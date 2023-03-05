@@ -5,6 +5,7 @@
 PHP 7.2+, Composer
 
 # Χαρακτηριστικά
+* Σύνδεση με SQLite3/MySQL
 * Login/Logout
 * Απεριόριστοι Φορείς
 * Απεριόριστα EndPoints

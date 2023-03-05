@@ -264,6 +264,7 @@ if (array_key_exists("resetshde",$req))
  <div class="columns">
   <div class="column">
  <br><br>Χαρακτηριστικά:<hr>
+<li>Σύνδεση με SQLite3/MySQL</li>
 <li>Login/Logout με Taxis/Βιομετρικό Login/ΠΣΔ</li>
 <li>Απεριόριστοι Φορείς</li>
 <li>Απεριόριστα EndPoints</li>
