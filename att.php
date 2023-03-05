@@ -81,7 +81,7 @@ if (array_key_exists("fileToUpload",$_FILES))
             $desc = ed($desc,$pwd,'e');
         }
 
-    QQ("INSERT INTO ATTACHMENTS (MID,NAME,TYPE,DESC,DATA) VALUES(?,?,?,?,?)",array($_POST['mid'],$name,$type,$desc,$data));
+    QQ("INSERT INTO ATTACHMENTS (MID,NAME,TYPE,DESCRIPTION,DATA) VALUES(?,?,?,?,?)",array($_POST['mid'],$name,$type,$desc,$data));
     redirect("att.php?did={$_POST['did']}&mid={$_POST['mid']}");
     die;
 }
@@ -143,13 +143,13 @@ else
                     }
                 $r1['TYPE'] = ed($r1['TYPE'],$pwd,'d');
                 $r1['NAME'] = ed($r1['NAME'],$pwd,'d');
-                $r1['DESC'] = ed($r1['DESC'],$pwd,'d');
+                $r1['DESCRIPTION'] = ed($r1['DESCRIPTION'],$pwd,'d');
             }
 
             printf('<td>%s</td>',$r1['ID']);
             printf('<td>%s</td>',$r1['TYPE']);
             printf('<td>%s</td>',$r1['NAME']);
-            printf('<td>%s</td>',$r1['DESC']);
+            printf('<td>%s</td>',$r1['DESCRIPTION']);
             printf('<td><a href="att.php?view=%s&mid=%s&did=%s" target="_blank">Προβολή</a> &mdash; <a href="att.php?view=%s&mid=%s&did=%s&download=1" target="_blank">Κατέβασμα</a> &mdash; <a href="javascript:del(%s);">Διαγραφή</a></td>',$r1['ID'],$msg['ID'],$doc['ID'],$r1['ID'],$msg['ID'],$doc['ID'],$r1['ID']);
             printf('</tr>');
         }
