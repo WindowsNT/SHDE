@@ -135,7 +135,7 @@ if (file_exists($dbxxpending))
                 $fname = $at->getFilename();
                 $stream = $at->getContent();
                 $ty = $at->getContentType();
-                QQ("INSERT INTO ATTACHMENTS (MID,NAME,TYPE,DESC,DATA) VALUES(?,?,?,?,?)",array(
+                QQ("INSERT INTO ATTACHMENTS (MID,NAME,TYPE,DESCRIPTION,DATA) VALUES(?,?,?,?,?)",array(
                     $mid,$fname,$ty,"",$stream
                 ));
             }
