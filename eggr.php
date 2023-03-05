@@ -672,7 +672,7 @@ function SearchFilter($did)
     return 0;
 }
 
-function PrintMyDocuments($uid,$fid = 0,$eid = 0,$oid = 0,$full,$did = 0)
+function PrintMyDocuments($uid,$fid = 0,$eid = 0,$oid = 0,$full = 0,$did = 0)
 {
     global $req;
     if (array_key_exists("q",$req))

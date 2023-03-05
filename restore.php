@@ -115,7 +115,7 @@ function RestoreEndpoint($j,$oid = 0)
     }
     foreach($j['roles'] as $role)
     {
-        QQ("INSERT INTO ROLE (UID,ROLEID,OID,EID) VALUES(?,?,?,?)",array(
+        QQ("INSERT INTO ROLES (UID,ROLEID,OID,EID) VALUES(?,?,?,?)",array(
             $role['UID'],$role['ROLEID'],$oid,$eid
         ));
     }
@@ -148,7 +148,7 @@ function RestoreOrganization($j)
 
     foreach($j['roles'] as $role)
     {
-        QQ("INSERT INTO ROLE (UID,ROLEID,OID) VALUES(?,?,?)",array(
+        QQ("INSERT INTO ROLES (UID,ROLEID,OID) VALUES(?,?,?)",array(
             $role['UID'],$role['ROLEID'],$oid
         ));
     }
