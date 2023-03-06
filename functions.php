@@ -3,7 +3,6 @@
 /*
 
     Diavgeia
-    SELECT COUNT(*) sqlite / MySQL
 
 */
 
@@ -867,9 +866,9 @@ function OidsThatCanAccess($uid)
 function NumDocsInFolder($fid,$unread = 0)
 {
     if ($unread)
-        return QQ("SELECT COUNT(*) FROM DOCUMENTS WHERE FID = ? AND READSTATE = 1",array($fid))->fetchArray()[0];
+        return CountDB("DOCUMENTS WHERE FID = ? AND READSTATE = 1",array($fid));
     else
-        return QQ("SELECT COUNT(*) FROM DOCUMENTS WHERE FID = ?",array($fid))->fetchArray()[0];
+        return CountDB("DOCUMENTS WHERE FID = ?",array($fid));
 }
 
 function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur = array(0,0,0))
@@ -962,7 +961,7 @@ function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur
                     }
                     else
                     {
-                        $qUnread = QQ("SELECT COUNT(*) FROM DOCUMENTS WHERE FID = ? AND READSTATE = 1",array($r3['ID']))->fetchArray()[0];
+                        $qUnread = CountDB("DOCUMENTS WHERE FID = ? AND READSTATE = 1",array($r3['ID']));
                         if ($qUnread)
                             $nn = '<b>'.$r3['NAME'].'</b>';
                     }
@@ -1362,7 +1361,7 @@ function DeleteMessage($mid,$fc = 0)
         // it's not the latest
         return false;
     }
-    $cnt = QQ("SELECT COUNT(*) FROM MESSAGES WHERE DID = ?",array($did))->fetchArray()[0];
+    $cnt = CountDB("MESSAGES WHERE DID = ?",array($did));
     if ($cnt == 1 && QQ("SELECT * FROM MESSAGES WHERE ID = ?",array($mid))->fetchArray())
     {
         return DeleteDocument($did,$fc);

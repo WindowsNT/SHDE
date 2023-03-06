@@ -141,7 +141,7 @@ function ShdeSend($docr,$msgr,$pdf,$pdffile)
     $m["LocalSectorProtocolNo"] = sprintf("%d",$prot['n']);
     $m["LocalSectorProtocolDate"] = date("Y-m-d H:i:s",$prot['t']);
 
-    $howdeps = QQ("SELECT COUNT(*) FROM ENDPOINTS WHERE OID = ?",array($fr['ID']))->fetchArray()[0];
+    $howdeps = CountDB("ENDPOINTS WHERE OID = ?",array($fr['ID']));
     if ($howdeps > 1)
         $m["SenderSectorDepartment"] = $er['NAME'];
 

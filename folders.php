@@ -26,7 +26,7 @@ if (array_key_exists("delete",$req))
     echo '<div class="content" style="margin:20px;">';
     echo 'Διαγραφή Φακέλου';
 
-    $docccount = QQ("SELECT COUNT(*) FROM DOCUMENTS WHERE FID = ?",array($req['delete']))->fetchArray()[0];
+    $docccount = CountDB("DOCUMENTS WHERE FID = ?",array($req['delete']));
 
     if ($docccount)
         printf("<br><b>Η διαγραφή του φακέλου θα διαγράψει οριστικά και %s έγγραφα που βρίσκονται σε αυτόν!</b>",$docccount);

@@ -29,10 +29,10 @@ if (array_key_exists("delete",$req) && $u->superadmin)
     while($r2 = $q2->fetchArray())
     {
         $ecount++;
-        $fcount += QQ("SELECT COUNT(*) FROM FOLDERS WHERE EID = ?",array($r2['ID']))->fetchArray()[0];        
-        $doccount += QQ("SELECT COUNT(*) FROM DOCUMENTS WHERE EID = ?",array($r2['ID']))->fetchArray()[0];
+        $fcount += CountDB("FOLDERS WHERE EID = ?",array($r2['ID']));        
+        $doccount += CountDB("DOCUMENTS WHERE EID = ?",array($r2['ID']));
     }
-    $abcount = QQ("SELECT COUNT(*) FROM ADDRESSBOOK WHERE OID = ?",array($req['delete']))->fetchArray()[0];
+    $abcount = CountDB("ADDRESSBOOK WHERE OID = ?",array($req['delete']));
 
     if ($fcount || $doccount || $ecount || $abcount) 
         printf("<br><b>Η διαγραφή του φορέα θα διαγράψει οριστικά: %s endpoints, %s φακέλους με συνολικά %s έγγραφα καθώς και %s εγγραφές στο βιβλίο διευθύνσεων!</b>",$ecount,$fcount,$doccount,$abcount);
