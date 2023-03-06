@@ -103,6 +103,16 @@ function QQ($q,$arr = array(),$stmt = null)
 }
 
 
+function CountDB($q,$arr)
+{
+	global $db;
+    if (!is_array($arr)) die("QQ passed not an array.");
+    global $mysqli;
+    if ($mysqli)
+        return QQZ($db,"SELECT COUNT(ID) FROM $q",$arr)->fetchArray()[0];
+    else
+        return QQZ($db,"SELECT COUNT(*) FROM $q",$arr)->fetchArray()[0];
+}
 
 
 function PrepareDatabase()

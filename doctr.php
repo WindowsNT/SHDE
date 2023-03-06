@@ -430,7 +430,7 @@ function DocTR($did,$a,$full = 0,$putoid = 1,$puteid = 1,$putfid = 1)
     }
     if ($inc)
         {
-            $attc = QQ("SELECT COUNT(*) FROM ATTACHMENTS WHERE MID = ?",array($lastmid))->fetchArray()[0];
+            $attc = CountDB("ATTACHMENTS WHERE MID = ?",array($lastmid));
             if ($attc)
                 $s .= sprintf('<a href="att.php?did=%s&mid=%s">Επισυναπτόμενα (%s)</a><br>',$did,$lastmid,$attc);
         }

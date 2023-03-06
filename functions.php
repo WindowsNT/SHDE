@@ -3,6 +3,7 @@
 /*
 
     Diavgeia
+    SELECT COUNT(*) sqlite / MySQL
 
 */
 

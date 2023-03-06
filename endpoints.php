@@ -24,10 +24,10 @@ if (!$u)
         echo '<div class="content" style="margin:20px;">';
         echo 'Διαγραφή Endpoint';
     
-        $fcount = QQ("SELECT COUNT(*) FROM FOLDERS WHERE EID = ?",array($req['delete']))->fetchArray()[0];
-        $docccount = QQ("SELECT COUNT(*) FROM DOCUMENTS WHERE EID = ?",array($req['delete']))->fetchArray()[0];
-        $abcount = QQ("SELECT COUNT(*) FROM ADDRESSBOOK WHERE EID = ?",array($req['delete']))->fetchArray()[0];
-        $rcount = QQ("SELECT COUNT(*) FROM ROLES WHERE EID = ?",array($req['delete']))->fetchArray()[0];
+        $fcount = CountDB("FOLDERS WHERE EID = ?",array($req['delete']));
+        $docccount = CountDB("DOCUMENTS WHERE EID = ?",array($req['delete']));
+        $abcount = CountDB("ADDRESSBOOK WHERE EID = ?",array($req['delete']));
+        $rcount = CountDB("ROLES WHERE EID = ?",array($req['delete']));
 
         if ($fcount || $docccount || $abcount || $rcount) 
             printf("<br><b>Η διαγραφή του endpoint θα διαγράψει οριστικά και %s φακέλους με συνολικά %s έγγραφα που βρίσκονται σε αυτό, καθώς και %s εγγραφές στο βιβλίο διευθύνσεων και %s ρόλους προσωπικού!</b>",$fcount,$docccount,$abcount,$rcount);
