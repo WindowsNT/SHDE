@@ -25,6 +25,7 @@ PHP 7.2+, Composer
 * Κανόνες εισερχομένων
 * Δυνατότητα αντιστοίχισης εικονικού email σε endpoint
 * Κρυπτογραφημένα έγγραφα
+* Θυρίδες για κάθε χρήστη
 
 # Βιβλιοθήκες σε χρήση
 * Web Push - https://github.com/web-push-libs/web-push-php
