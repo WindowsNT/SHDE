@@ -659,7 +659,7 @@ function PickPriority($name = "priority",$sel = array())
   return $s;
 }
 
-function PickUser($name = "uid",$sel = array(),$m = 0,$foreis = array(),$andall = 0,$uid = 0)
+function PickUser($name = "uid",$sel = array(),$m = 0,$foreis = array(),$andall = 0,$uid = 0,$eps = array())
 {
     $s = sprintf('<select type="select" name="%s" class="input chosen-select" %s>',$name,$m  == 1 ? "multiple" : "");
 
@@ -693,6 +693,27 @@ function PickUser($name = "uid",$sel = array(),$m = 0,$foreis = array(),$andall 
             }
             if ($found == 0)
                 continue;
+        }
+        if (count($eps) > 0)
+        {
+            $found = 0;
+            foreach($eps as $fid)
+            {
+                if ($fid == 0) 
+                {
+                    $found = 1;
+                    break;
+                }
+                $q9 = QQ("SELECT * FROM ROLES WHERE EID = ? AND UID = ?",array($fid,$r['ID']))->fetchArray();
+                if ($q9 && ($uid == 0 || UserAccessEP($fid,$uid)))
+                {
+                    $found = 1;
+                    break;
+                }
+            }
+            if ($found == 0)
+                continue;
+
         }
 
         if ($uid && UserAccessUser($r['ID'],$uid) == 0)
@@ -1556,6 +1577,27 @@ function DeleteWholeFolder($id)
 }
 
 
+function DeleteWholeLocker($id)
+{
+    $fq = QQ("SELECT * FROM FOLDERS WHERE LID = ?",array($id));
+    while($r = $fq->fetchArray())
+    {
+        $q5 = QQ("SELECT ID FROM DOCUMENTS WHERE FID = ?",array($r['ID']));
+        $ids = array();
+        while($r5 = $q5->fetchArray())
+        {
+            $ids[] = $r5['ID'];
+        }
+        foreach($ids as $id2)
+        {
+            DeleteWholeDocument($id2);
+        }
+        QQ("DELETE FROM FOLDERS WHERE ID = ?",array($r['ID']));
+    }
+    QQ("DELETE FROM LOCKERS WHERE ID = ?",array($id));
+}
+
+
 function DeleteWholeEndpoint($id)
 {
     $q5 = QQ("SELECT ID FROM DOCUMENTS WHERE EID = ?",array($id));
@@ -1576,6 +1618,16 @@ function DeleteWholeEndpoint($id)
     foreach($ids2 as $id3)
         DeleteWholeFolder($id3);
 
+    $q7 = QQ("SELECT ID FROM LOCKERS WHERE EID = ?",array($id));
+    $ids7 = array();
+    while($r7 = $q7->fetchArray())
+    {
+        $ids7[] = $r7['ID'];
+    }
+    foreach($ids7 as $id77)
+        DeleteWholeLocker($id77);
+    
+    
     QQ("DELETE FROM ADDRESSBOOK WHERE EID = ?",array($id));
     QQ("DELETE FROM ROLES WHERE EID = ?",array($id));
     QQ("DELETE FROM ENDPOINTS WHERE ID = ?",array($id))->fetchArray();

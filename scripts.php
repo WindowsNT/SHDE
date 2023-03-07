@@ -154,7 +154,7 @@ function summersel(v,mh)
     ['para', ['ul', 'ol', 'paragraph']],
     ['height', ['height']],
     ['table', ['table']],
-    ['insert', ['link', 'picture', 'hr', 'equation']],
+    ['insert', ['link', 'picture', 'hr', 'equation','table','video']],
     ['view', ['fullscreen', 'codeview']],
     ['undo', ['undo', 'redo']],
     ['help', ['help']]
