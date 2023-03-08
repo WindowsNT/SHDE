@@ -244,7 +244,8 @@ function PrintEndpoints($oid)
         printf('<td>%s<br>%s<br>%s</td>',$r['TEL1'],$r['TEL2'],$r['TEL3']);
         printf('<td>');
         if ($a == 2)
-            printf('<a href="endpoints.php?eid=%s">Επεξεργασία</a> &mdash; <a href="folders.php?eid=%s">Φάκελοι</a> &mdash; <a href="lockers.php?eid=%s">Θυρίδες</a> &mdash; <a href="rules.php?eid=%s">Κανόνες</a> &mdash; <a href="restrictions.php?eid=%s">Περιορισμοί</a>',$r['ID'],$r['ID'],$r['ID'],$r['ID'],$r['ID']);
+            printf('<a href="endpoints.php?eid=%s">Επεξεργασία</a> &mdash; <a href="folders.php?eid=%s">Φάκελοι</a> &mdash; <a href="lockers.php?eid=%s">Θυρίδες (%s)</a> &mdash; <a href="rules.php?eid=%s">Κανόνες</a> &mdash; <a href="restrictions.php?eid=%s">Περιορισμοί</a>',
+            $r['ID'],$r['ID'],$r['ID'],CountDB("LOCKERS WHERE EID = ?",array($r['ID'])),$r['ID'],$r['ID']);
         if ($a == 2)
             printf(' &mdash; <a href="endpoints.php?delete=%s"><font color="red">Διαγραφή</font></a>',$r['ID']);
         printf('</td>');
@@ -266,7 +267,7 @@ if (array_key_exists("eid",$req))
 else
 {
     if ($u->superadmin || count($u->fadmin))
-        PrintHeader('index.php','&nbsp; <button class="button is-primary is-small autobutton" href="endpoints.php?eid=0">Νέο Endpoint</button>');
+        PrintHeader('index.php','&nbsp; <button class="button is-primary autobutton" href="endpoints.php?eid=0">Νέο Endpoint</button>');
     else
         PrintHeader('index.php');
     $oid = 0;

@@ -509,15 +509,18 @@ function EswArrayText($did)
 
 
 
-function PickFolder($eid,$name = "parent",$sel = array(0),$uid = 0,$m = 0,$oid = 0,$andall = 1)
+function PickFolder($eid,$name = "parent",$sel = array(0),$uid = 0,$m = 0,$oid = 0,$andall = 1,$lid = 0)
 {
     $s = sprintf('<select  name="%s" class="input chosen-select" %s>',$name,$m == 1 ? "multiple" : "");
     if ($andall == 2)   
         $s .= sprintf('<option value="0" %s>(Όλοι)</option>',in_array(0,$sel) ? "selected" : 0);
     else
         $s .= sprintf('<option value="0" %s>(Κανένα)</option>',in_array(0,$sel) ? "selected" : 0);
-    if ($eid == 0)
+    if ($eid == 0 && $lid == 0)
         $q2 = QQ("SELECT * FROM FOLDERS ORDER BY NAME ASC");
+    else
+    if ($lid )
+        $q2 = QQ("SELECT * FROM FOLDERS WHERE LID = ? ORDER BY NAME ASC",array($lid));
     else
         $q2 = QQ("SELECT * FROM FOLDERS WHERE EID = ? ORDER BY NAME ASC",array($eid));
     while($r2 = $q2->fetchArray())
@@ -525,20 +528,29 @@ function PickFolder($eid,$name = "parent",$sel = array(0),$uid = 0,$m = 0,$oid =
         if ($uid && UserAccessFolder($r2['ID'],$uid) == 0)
             continue;
 
-        $pare = EPRow($r2['EID']);
-        if (!$pare)
-            continue;
-        if ($pare['OID'] != $oid && $oid != 0)
-            continue;
-        $or = FRow($pare['OID']);
-        if (!$or)
-            continue;
-
+        if ($eid)
+        {
+            $pare = EPRow($r2['EID']);
+            if (!$pare)
+                continue;
+            if ($pare['OID'] != $oid && $oid != 0)
+                continue;
+            $or = FRow($pare['OID']);
+            if (!$or)
+                continue;
+        }
 
         $n = $r2['NAME'];
-        if ($eid == 0 || $oid == 0)
+        if ($lid)
         {
-            $n = sprintf("%s &mdash; %s &mdash; %s",$or['NAME'],$pare['NAME'],$r2['NAME']);
+            
+        }
+        else
+        {
+            if ($eid == 0 || $oid == 0)
+            {
+                $n = sprintf("%s &mdash; %s &mdash; %s",$or['NAME'],$pare['NAME'],$r2['NAME']);
+            }
         }
 
         $s .= sprintf('<option value="%s" %s>%s</option>',$r2['ID'],in_array($r2['ID'],$sel) ? "selected" : "", $n);

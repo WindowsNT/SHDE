@@ -152,7 +152,7 @@ function PrintOrganzations()
         printf('<br>Παραγωγικό: %s &mdash; %s [%s]</td>',$r['SHDECODE'],$r['SHDECLIENT'],$r['SHDEPRODUCTION'] == 1 ? "<b>Τρέχον</b>": "");
 
         if ($a == 2)
-            printf('<td><a href="organizations.php?oid=%s">Επεξεργασία</a> &mdash; <a href="shdeputorgchart.php?oid=%s">Upload OrgChart</a> &mdash; <a href="endpoints.php?oid=%s">Endpoints</a> &mdash;  <a href="rules.php?oid=%s">Rules</a> &mdash; <a href="restrictions.php?oid=%s">Περιορισμοί</a>  &mdash; <a href="javascript:arch(%s,1);">Λήψη Αρχείου ΚΣΗΔΕ</a> &mdash; <a href="javascript:arch(%s,2);">Λήψη Αρχείου Απεσταλμένων ΚΣΗΔΕ</a> ',$r['ID'],$r['ID'],$r['ID'],$r['ID'],$r['ID'],$r['ID'],$r['ID']);
+            printf('<td><a href="organizations.php?oid=%s">Επεξεργασία</a> &mdash; <a href="shdeputorgchart.php?oid=%s">Upload OrgChart</a> &mdash; <a href="endpoints.php?oid=%s">Endpoints</a> &mdash; <a href="lockers.php?oid=%s">Θυρίδες</a> &mdash;  <a href="rules.php?oid=%s">Rules</a> &mdash; <a href="restrictions.php?oid=%s">Περιορισμοί</a>  &mdash; <a href="javascript:arch(%s,1);">Λήψη Αρχείου ΚΣΗΔΕ</a> &mdash; <a href="javascript:arch(%s,2);">Λήψη Αρχείου Απεσταλμένων ΚΣΗΔΕ</a> ',$r['ID'],$r['ID'],$r['ID'],$r['ID'],$r['ID'],$r['ID'],$r['ID'],$r['ID']);
         else
             printf('<td><a href="endpoints.php?oid=%s">Endpoints</a> ',$r['ID']);
         if ($u->superadmin)
@@ -249,7 +249,7 @@ else
 {
 
     if ($u->superadmin)
-        PrintHeader('index.php','&nbsp; <button class="button is-primary is-small autobutton" href="organizations.php?oid=0">Νέος Φορέας</button> ');
+        PrintHeader('index.php','&nbsp; <button class="button is-primary autobutton" href="organizations.php?oid=0">Νέος Φορέας</button> ');
     else
         PrintHeader('index.php');
     PrintOrganzations();
