@@ -174,7 +174,7 @@ if (array_key_exists("fid",$req))
 }
 else
 {
-    PrintHeader('endpoints.php',sprintf('&nbsp; <button class="button is-primary is-small autobutton" href="folders.php?fid=0&eid=%s&lid=%s">Νέος Φάκελος</button>',$eid,$lid));
+    PrintHeader('endpoints.php',sprintf('&nbsp; <button class="button is-primary autobutton" href="folders.php?fid=0&eid=%s&lid=%s">Νέος Φάκελος</button>',$eid,$lid));
     PrintFolders();
 }
 ?>

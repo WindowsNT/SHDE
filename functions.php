@@ -1032,6 +1032,21 @@ function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur
             }
         }
 
+
+    if ($nest == 0)
+    {
+        // Lockers
+        $ql = QQ("SELECT * FROM USERSINLOCKER WHERE UID = ?",array($uid));
+        while($rl = $ql->fetchArray())
+        {
+/*            if ($mobile)
+                $fis .= sprintf('<option %s value="eggr.php?oid=%s&fid=0&eid=%s">%s%s</option>',$selx,$r2['OID'],$r2['ID'],NestX('-',$nest),$nn);
+            else
+                $fis .= sprintf('<li  style="margin-left:2px; padding-left: 0px;" class="feid" id="feid%s"><span class="treecaret"></span><a href="eggr.php?oid=%s&fid=0&eid=%s">%s</a>',$r2['ID'],$r2['OID'],$r2['ID'],$nn);
+*/
+        }
+    }
+
     if ($nest == 0 && $mobile)
     {
         $fis .= '</select><br><br>';

@@ -118,9 +118,12 @@ function PrintRight($eid,$did,$mid)
 }
 
 
-function titsig($signer)
+function titsig($signer,$docr)
 {
-    return sprintf("%s<br><br><b>%s %s</b><br><br><br>",$signer['TITLE'],$signer['LASTNAME'],$signer['FIRSTNAME']);
+    $tit = $signer['TITLE'];
+    if ($docr['SIGNERTITLES'] && strlen($docr['SIGNERTITLES']))
+        $tit = explode(",",$docr['SIGNERTITLES'])[0];
+    return sprintf("%s<br><br><b>%s %s</b><br><br><br>",$tit,$signer['LASTNAME'],$signer['FIRSTNAME']);
 }
 
 
@@ -137,7 +140,7 @@ function PrintSignature($docrow)
     if (!$role)
         return '';
     $signer = UserRow($role['UID']);
-    $a = titsig($signer);
+    $a = titsig($signer,$docrow);
 
     // Extra
     if ($docrow['ADDEDSIGNERS'])
