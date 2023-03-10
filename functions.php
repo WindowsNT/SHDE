@@ -296,6 +296,10 @@ function FolderRow($id)
 {
     return QQ("SELECT * FROM FOLDERS WHERE ID = ?",array($id))->fetchArray();
 }
+function LockerRow($id)
+{
+    return QQ("SELECT * FROM LOCKERS WHERE ID = ?",array($id))->fetchArray();
+}
 function EPRow($id)
 {
     return QQ("SELECT * FROM ENDPOINTS WHERE ID = ?",array($id))->fetchArray();
@@ -904,6 +908,44 @@ function NumDocsInFolder($fid,$unread = 0)
         return CountDB("DOCUMENTS WHERE FID = ?",array($fid));
 }
 
+
+function TreeLocker($lid,$uid,$mobile)
+{
+    $lr = LockerRow($lid);
+    $fis = '';
+
+    if ($lr == null)
+        return $fis;
+    if (!$mobile)
+        $fis .= sprintf('<li style="margin-left:2px; padding-left: 0px;" class="feid" id="feidl%s" ><span class="treecaret"></span><a href="#">%s</a>',$lid,$lr['NAME']);
+    if (!$mobile)
+        $fis .= '<ul class="treenested">';
+    $q1 = QQ("SELECT * FROM FOLDERS WHERE LID = ? ORDER BY NAME ASC",array($lid));
+    while($r1 = $q1->fetchArray())
+    {
+        if ($mobile)
+        {
+            $fis .= sprintf('<option %s value="eggr.php?fid=%s">%s</option>','',$r1['ID'],$r1['NAME']);
+        }
+        else
+        {
+            $fis .= sprintf('<li  style="margin-left:2px; padding-left: 0px;" class="feid" id="feid%s"><span class=""></span><a href="eggr.php?fid=%s">%s</a></span></li>',$r1['ID'],$r1['ID'],$r1['NAME']);
+        }        
+    }
+
+    if (!$mobile)
+        $fis .= '</ul>';
+    if (!$mobile)
+        $fis .= '</li>';
+
+/*    if ($mobile)
+    $fis .= sprintf('<option %s value="eggr.php?fid=%s">%s</option>','',$rl['ID'],$nn);
+            else
+    $fis .= sprintf('<li  style="margin-left:2px; padding-left: 0px;" class="feid" id="feid%s"><span class="treecaret"></span><a href="eggr.php?oid=%s&fid=0&eid=%s">%s</a>',$r2['ID'],$r2['OID'],$r2['ID'],$nn);
+*/
+    return $fis;
+}
+
 function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur = array(0,0,0))
 {
     global $mobile;
@@ -936,7 +978,18 @@ function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur
             $fis .= '</li>';
         }
         if (!$mobile)
-            $fis .= '</ul>';
+            {
+                if ($nest == 0)
+                {
+                    // Lockers
+                    $ql = QQ("SELECT * FROM USERSINLOCKER WHERE UID = ?",array($uid));
+                    while($rl = $ql->fetchArray())
+                    {
+                        $fis .= TreeLocker($rl['LID'],$uid,$mobile);
+                    }
+                }
+                $fis .= '</ul>';
+            }
     }
     else
     {
@@ -965,7 +1018,19 @@ function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur
                 $fis .= '</li>';
             }
             if (!$mobile)
+            {
+                if ($nest == 0)
+                {
+                    // Lockers
+                    $ql = QQ("SELECT * FROM USERSINLOCKER WHERE UID = ?",array($uid));
+                    while($rl = $ql->fetchArray())
+                    {
+                        $fis .= TreeLocker($rl['LID'],$uid,$mobile);
+                    }
+                }
                 $fis .= '</ul>';
+            }
+                
         }
         else
         {
@@ -1032,20 +1097,6 @@ function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur
             }
         }
 
-
-    if ($nest == 0)
-    {
-        // Lockers
-        $ql = QQ("SELECT * FROM USERSINLOCKER WHERE UID = ?",array($uid));
-        while($rl = $ql->fetchArray())
-        {
-/*            if ($mobile)
-                $fis .= sprintf('<option %s value="eggr.php?oid=%s&fid=0&eid=%s">%s%s</option>',$selx,$r2['OID'],$r2['ID'],NestX('-',$nest),$nn);
-            else
-                $fis .= sprintf('<li  style="margin-left:2px; padding-left: 0px;" class="feid" id="feid%s"><span class="treecaret"></span><a href="eggr.php?oid=%s&fid=0&eid=%s">%s</a>',$r2['ID'],$r2['OID'],$r2['ID'],$nn);
-*/
-        }
-    }
 
     if ($nest == 0 && $mobile)
     {

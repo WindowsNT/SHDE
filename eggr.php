@@ -704,7 +704,12 @@ function PrintMyDocuments($uid,$fid = 0,$eid = 0,$oid = 0,$full = 0,$did = 0)
     if ($eid)
         $where .= sprintf('&mdash; <b><a href="eggr.php?oid=%s&eid=%s" style="color: blue !important">%s</a></b> ',$oidr['ID'],$eidr['ID'],$eidr['NAME']);
     if ($fid)
-        $where .= sprintf('&mdash; <b><a href="eggr.php?oid=%s&eid=%s&fid=%s" style="color: green !important">%s</a></b> ',$oidr['ID'],$eidr['ID'],$f1['ID'],$f1['NAME']);
+        {
+            if ($oidr && $eidr)
+                $where .= sprintf('&mdash; <b><a href="eggr.php?oid=%s&eid=%s&fid=%s" style="color: green !important">%s</a></b> ',$oidr['ID'],$eidr['ID'],$f1['ID'],$f1['NAME']);
+            else
+                $where .= sprintf('&mdash; <b><a href="eggr.php?fid=%s" style="color: green !important">%s</a></b> ',$f1['ID'],$f1['NAME']);
+        }
     $where .= '<br>';
 
     $s = Selects();
@@ -723,7 +728,7 @@ function PrintMyDocuments($uid,$fid = 0,$eid = 0,$oid = 0,$full = 0,$did = 0)
         $s = '';
       else
       {
-        $q6 = QQ("SELECT * FROM FOLDERS ORDER BY EID ASC, NAME ASC");
+        $q6 = QQ("SELECT * FROM FOLDERS WHERE (LID = 0 OR LID IS NULL) ORDER BY EID ASC, NAME ASC");
         
         $laster = null;
         while($r6 = $q6->FetchArray())
