@@ -118,11 +118,11 @@ function PrintRight($eid,$did,$mid)
 }
 
 
-function titsig($signer,$docr)
+function titsig($signer,$docr,$what = 0)
 {
     $tit = $signer['TITLE'];
     if ($docr['SIGNERTITLES'] && strlen($docr['SIGNERTITLES']))
-        $tit = explode(",",$docr['SIGNERTITLES'])[0];
+        $tit = explode(",",$docr['SIGNERTITLES'])[$what];
     return sprintf("%s<br><br><b>%s %s</b><br><br><br>",$tit,$signer['LASTNAME'],$signer['FIRSTNAME']);
 }
 
@@ -143,6 +143,7 @@ function PrintSignature($docrow)
     $a = titsig($signer,$docrow);
 
     // Extra
+    $ji = 1;
     if ($docrow['ADDEDSIGNERS'])
     {
         $extrasigs = explode(",",$docrow['ADDEDSIGNERS']);
@@ -162,11 +163,10 @@ function PrintSignature($docrow)
                 }
 
             if ($down == 0)
-                $a = titsig($signer2).$a;
+                $a = titsig($signer2,$docrow,$ji).$a;
             else
-                $a = $a.titsig($signer2);
-
-            
+                $a = $a.titsig($signer2,$docrow,$ji);
+            $ji++;
         }
     }
 
@@ -212,6 +212,8 @@ function PrintEsw($doc)
           $cnx++;
       }
   }
+
+
   return $s;
 }
 function PrintAll($did,$mid)
@@ -269,6 +271,8 @@ function PrintAll($did,$mid)
     $s .= sprintf('</table>');
     $s .= PrintAttachments($doc,$msg,$msg['ID']);
     $s .= PrintEsw($doc);
+    if ($doc['ORIGINALITY'] == 1)
+        $s .= '<br>ΑΚΡΙΒΕΣ ΑΝΤΙΓΡΑΦΟ';
 
     return $s;
 }

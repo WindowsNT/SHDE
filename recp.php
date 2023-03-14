@@ -133,10 +133,10 @@ echo '<br><br><article class="panel is-primary">
 ';
 echo '<br><br>Παραλήπτες εντός ΚΣΗΔΕ:<br><br>';
 $restr = array();
-if ($er['LIMITCODES'] && strlen($er['LIMITCODES']))
-    $restr = explode(",",$er['LIMITCODES']);
-if ($fr['LIMITCODES'] && strlen($fr['LIMITCODES']))
-    $restr = explode(",",$fr['LIMITCODES']);
+//if ($er['LIMITCODES'] && strlen($er['LIMITCODES']))
+//    $restr = explode(",",$er['LIMITCODES']);
+//if ($fr['LIMITCODES'] && strlen($fr['LIMITCODES']))
+  //  $restr = explode(",",$fr['LIMITCODES']);
 
 $s1 = EchoShdePicker(random_int(700000,799999),"intr[]",$doc['RECPX'] && strlen($doc['RECPX']) ? unserialize($doc['RECPX']) : array(),1,$restr);
 echo $s1;
