@@ -391,6 +391,16 @@ if (array_key_exists("send",$_POST))
                 if ($fromm == '')
                     $fromm = $topmail;
                 $mail->setFrom($fromm,$title);
+
+                if (1)
+                {
+                    $eUser = $fromm;
+                    $mail->AddCustomHeader( "X-Confirm-Reading-To: $eUser" );
+                    $mail->AddCustomHeader( "Return-Receipt-To: $eUser" );
+                    $mail->AddCustomHeader( "Disposition-Notification-To: $eUser" );
+                }
+        
+        
                 $mail->addReplyTo($epr['EMAIL'],$epr['NAME']);
                 $mail->isMail();
 

@@ -19,7 +19,7 @@ function OrgTree3($top = 0,$mustActive = 1,$sel = array(),$restr = array())
         $q1 = QQ("SELECT * FROM ORGCHART WHERE PARENT = 0 ORDER BY NAME ASC");
         while($r1 = $q1->fetchArray())
         {
-            if (count($restr) > 0 && !in_array($r1['ID'],$restr))
+            if (count($restr) > 0 && !in_array($r1['CODE'],$restr))
                 continue;
             $n = $r1['NAME'];
             if ($r1['ACTIVE'] == 1)
@@ -49,7 +49,7 @@ function OrgTree3($top = 0,$mustActive = 1,$sel = array(),$restr = array())
         $q2 = QQ("SELECT * FROM ORGCHART WHERE PARENT = ? ORDER BY NAME ASC",array($top));
         while($r2 = $q2->fetchArray())
         {
-            if (count($restr) > 0 && !in_array($r2['ID'],$restr))
+            if (count($restr) > 0 && !in_array($r2['CODE'],$restr))
                 continue;
             $n = $r2['NAME'];
             if ($r2['ACTIVE'] == 1)
@@ -87,6 +87,7 @@ else
             $req['restr'] = array();
 
     }
+
 
 ?>
 <div class="content" style="margin:20px">

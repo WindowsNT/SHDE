@@ -20,6 +20,7 @@ function mail2($mailfrom = array("name" => "Me","mail" => "me@me.com"),$receipie
 	    else
 		    $mail->addReplyTo($replyto["mail"],$replyto["name"]);
 
+
         // SMTP?
         if (count($smtp) >= 2)
 	    {
@@ -68,7 +69,7 @@ function mail2($mailfrom = array("name" => "Me","mail" => "me@me.com"),$receipie
             if (strlen($textmessage))
                 $mail->AltBody  =  $textmessage;
 		    }
-	    if (count($dkim) >= 2)0
+	    if (count($dkim) >= 2)
 	    {
 		    $mail->DKIM_domain = $dkim["domain"];
 		    $mail->DKIM_private = $dkim["priv"];
