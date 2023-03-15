@@ -123,8 +123,11 @@ function titsig($signer,$docr,$what = 0)
     $tit = $signer['TITLE'];
     if ($docr['SIGNERTITLES'] && strlen($docr['SIGNERTITLES']))
         $tit = explode(",",$docr['SIGNERTITLES'])[$what];
-    return sprintf("%s<br><br><b>%s %s</b><br><br><br>",$tit,$signer['LASTNAME'],$signer['FIRSTNAME']);
-}
+    if (trim($tit) == '')
+        return sprintf("<b>%s %s</b><br><br>",$signer['LASTNAME'],$signer['FIRSTNAME']);
+    else
+        return sprintf("%s<br><br><b>%s %s</b><br><br>",$tit,$signer['LASTNAME'],$signer['FIRSTNAME']);
+    }
 
 
 
@@ -178,20 +181,25 @@ function PrintAttachments($doc,$msg,$mid)
 {
     $s = '';
     $q = QQ("SELECT * FROM ATTACHMENTS WHERE MID = ?",array($mid));
-    $cnt = 1;
+    $cnt = 0;
+
     while($r = $q->fetchArray())
     {
+        if ($cnt == 0)
+            $s .= sprintf("Συννημένα<hr>");
+        $cnt++;
         if ($doc['CLASSIFIED'] > 0)
         {
             $pwd = PasswordFromSession($doc['ID']);
             if ($pwd !== FALSE)
-                $s .= sprintf("Συννημένο %s: <b>%s</b><br>",$cnt,ed($r['DESC'],$pwd,'d'));
+                $s .= sprintf("%s: <b>%s</b><br>",$cnt,ed($r['DESCRIPTION'],$pwd,'d'));
 
         }
         else
-           $s .= sprintf("Συννημένο %s: <b>%s</b><br>",$cnt,$r['DESC']);
-        $cnt++;
+           $s .= sprintf(" %s: <b>%s</b><br>",$cnt,$r['DESCRIPTION']);
     }
+    if (strlen($s))
+        $s .= '<br>';
     return $s;
 }
 

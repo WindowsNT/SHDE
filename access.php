@@ -291,9 +291,6 @@ function CanSign($did,$uid)
     if (array_key_exists("ENCRYPTED",$doc) && $doc['ENCRYPTED'] == 1)
         return -1;
     $eid = $doc['EID'];
-    $rl = QQ("SELECT * FROM ROLES WHERE ROLEID = ? AND UID = ? AND EID = ?",array(ROLE_SIGNER0,$uid,$eid))->fetchArray();
-    if (!$rl)
-        return -2;
     if ($doc['TYPE'] != 0)
         return -3; // email
     $msg = QQ("SELECT * FROM MESSAGES WHERE DID = ? ORDER BY DATE DESC",array($doc['ID']))->fetchArray();
@@ -301,6 +298,11 @@ function CanSign($did,$uid)
         return -4;
     if ($msg['SIGNEDPDF'] && strlen($msg['SIGNEDPDF']) > 5)
         return -5;
+    if ($doc['ORIGINALITY'] == 1)
+        return 0;
+    $rl = QQ("SELECT * FROM ROLES WHERE ROLEID = ? AND UID = ? AND EID = ?",array(ROLE_SIGNER0,$uid,$eid))->fetchArray();
+    if (!$rl)
+        return -2;
     
     return 0;
 }
