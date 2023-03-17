@@ -119,7 +119,7 @@ function ReceiveOrgLive()
         $st = $base;
     
         $loge = sprintf("shde_login_%s",$r1['ID']);
-        if (array_key_exists($loge,$_SESSION))
+        if (array_key_exists($loge,$_SESSION))  
         {
             if (array_key_exists("AccessToken",$_SESSION[$loge]))
             {

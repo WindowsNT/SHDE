@@ -192,11 +192,11 @@ function PrintAttachments($doc,$msg,$mid)
         {
             $pwd = PasswordFromSession($doc['ID']);
             if ($pwd !== FALSE)
-                $s .= sprintf("%s: <b>%s</b><br>",$cnt,ed($r['DESCRIPTION'],$pwd,'d'));
+                $s .= sprintf("<b>%s.</b> %s<br>",$cnt,ed($r['DESCRIPTION'],$pwd,'d'));
 
         }
         else
-           $s .= sprintf(" %s: <b>%s</b><br>",$cnt,$r['DESCRIPTION']);
+           $s .= sprintf("<b>%s.</b> %s<br>",$cnt,$r['DESCRIPTION']);
     }
     if (strlen($s))
         $s .= '<br>';
