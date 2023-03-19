@@ -67,7 +67,7 @@ if (array_key_exists("c",$_POST))
     if (!$r)
     {
         // Create
-            QQ("INSERT INTO ENDPOINTS (NAME,NAMEEN,OID,PARENT,EMAIL,ALIASEMAIL,INACTIVE,T0,T1,T2,T3,T4,T5,A1,A2,A3,TEL1,TEL2,TEL3) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array($_POST['name'],$_POST['nameen'],$_POST['oid'],$_POST['pid'],$_POST['email'],$_POST['aliasemail'],$_POST['inactive'],$_POST['t0'],$_POST['t1'],$_POST['t2'],$_POST['t3'],$_POST['t4'],$_POST['t5'],$_POST['a1'],$_POST['a2'],$_POST['a3'],$_POST['tel1'],$_POST['tel2'],$_POST['tel3']));
+            QQ("INSERT INTO ENDPOINTS (NAME,NAMEEN,OID,PARENT,EMAIL,ALIASEMAIL,FORWARDEMAIL,INACTIVE,T0,T1,T2,T3,T4,T5,A1,A2,A3,TEL1,TEL2,TEL3) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array($_POST['name'],$_POST['nameen'],$_POST['oid'],$_POST['pid'],$_POST['email'],$_POST['aliasemail'],$_POST['forwardemail'],$_POST['inactive'],$_POST['t0'],$_POST['t1'],$_POST['t2'],$_POST['t3'],$_POST['t4'],$_POST['t5'],$_POST['a1'],$_POST['a2'],$_POST['a3'],$_POST['tel1'],$_POST['tel2'],$_POST['tel3']));
             CreateSpecialFoldersForEndpoint($lastRowID);
     }
     else
@@ -75,7 +75,7 @@ if (array_key_exists("c",$_POST))
         // Edit
         if ($_POST['pid'] == $_POST['c'])
             die ("Same PID as EID");
-        QQ("UPDATE ENDPOINTS SET NAME = ?,NAMEEN = ?, OID = ?,PARENT = ?,EMAIL = ?,ALIASEMAIL = ?,INACTIVE = ?, T0 = ?,T1 = ?,T2 = ?,T3 = ?,T4 = ?,T5 = ?,A1 = ?,A2 = ?,A3 = ?,TEL1 = ?,TEL2 = ?,TEL3 = ? WHERE ID = ?",array($_POST['name'],$_POST['nameen'],$_POST['oid'],$_POST['pid'],$_POST['email'],$_POST['aliasemail'],$_POST['inactive'],$_POST['t0'],$_POST['t1'],$_POST['t2'],$_POST['t3'],$_POST['t4'],$_POST['t5'],$_POST['a1'],$_POST['a2'],$_POST['a3'],$_POST['tel1'],$_POST['tel2'],$_POST['tel3'],$_POST['c']));
+        QQ("UPDATE ENDPOINTS SET NAME = ?,NAMEEN = ?, OID = ?,PARENT = ?,EMAIL = ?,ALIASEMAIL = ?,FORWARDEMAIL = ?,INACTIVE = ?, T0 = ?,T1 = ?,T2 = ?,T3 = ?,T4 = ?,T5 = ?,A1 = ?,A2 = ?,A3 = ?,TEL1 = ?,TEL2 = ?,TEL3 = ? WHERE ID = ?",array($_POST['name'],$_POST['nameen'],$_POST['oid'],$_POST['pid'],$_POST['email'],$_POST['aliasemail'],$_POST['forwardemail'],$_POST['inactive'],$_POST['t0'],$_POST['t1'],$_POST['t2'],$_POST['t3'],$_POST['t4'],$_POST['t5'],$_POST['a1'],$_POST['a2'],$_POST['a3'],$_POST['tel1'],$_POST['tel2'],$_POST['tel3'],$_POST['c']));
         CreateSpecialFoldersForEndpoint($_POST['c']);
     }
     redirect("endpoints.php");
@@ -102,7 +102,7 @@ function CreateOrEditEndpoint($eid)
         return;
 
     if (!$r)
-        $r = array("ID" => 0, "OID" => 0,"PARENT" => "","NAME" => "", "NAMEEN" => "","EMAIL" => "","ALIASEMAIL" => "", "INACTIVE" => 0,"T0" => "","T1" => "","T2" => "", "T3" => "","T4" => "","T5" => "","A1" => "","A2" => "","A3" => "","TEL1" => "","TEL2" => "","TEL3" => "");
+        $r = array("ID" => 0, "OID" => 0,"PARENT" => "","NAME" => "", "NAMEEN" => "","EMAIL" => "","ALIASEMAIL" => "","FORWARDEMAIL" => "", "INACTIVE" => 0,"T0" => "","T1" => "","T2" => "", "T3" => "","T4" => "","T5" => "","A1" => "","A2" => "","A3" => "","TEL1" => "","TEL2" => "","TEL3" => "");
 
     ?>
     <form method="POST" action="endpoints.php">
@@ -134,6 +134,10 @@ function CreateOrEditEndpoint($eid)
 <br><br>
     Εικονικό E-mail για είσοδο από mails: <br>
     <input type="email" class="input" name="aliasemail" value="<?= $r['ALIASEMAIL']?>" />
+    <br><br>
+    E-mail για προώθηση όλων των εισερχομένων: <br>
+    <input type="email" class="input" name="forwardemail" value="<?= $r['FORWARDEMAIL']?>" />
+
 
     <br><br>
     Ενεργό στο KΣΗΔΕ<br>
@@ -222,7 +226,7 @@ function PrintEndpoints($oid)
         $or = FRow($r['OID']);
         printf('<td>%s</td>',$or['NAME']);
         printf('<td>%s<br>%s<br>%s</td>',$r['NAME'],$r['NAMEEN'],$r['INACTIVE'] == 1 ? "Ανενεργό" : "Ενεργό") ;
-        printf('<td>%s<br>%s</td>',$r['EMAIL'],$r['ALIASEMAIL']);
+        printf('<td>%s<br>%s<br>%s</td>',$r['EMAIL'],$r['ALIASEMAIL'],$r['FORWARDEMAIL'] && strlen($r['FORWARDEMAIL']) ? '=>'.$r['FORWARDEMAIL'] : '');
         if ($r['PARENT'] == 0)
             printf('<td></td>');
         else

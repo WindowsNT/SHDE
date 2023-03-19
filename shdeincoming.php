@@ -5,6 +5,99 @@ $whereret = 'eggr.php';
 if (array_key_exists("shde_eggrurl",$_SESSION))
     $whereret = $_SESSION['shde_eggrurl'];
 
+// Also temp mails
+require_once "vendor/autoload.php";
+use ZBateson\MailMimeParser\MailMimeParser;
+use ZBateson\MailMimeParser\Message;
+use ZBateson\MailMimeParser\Header\HeaderConsts;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;    
+require_once "printit.php";
+require_once "pdfstuff.php";
+
+function SendAsMail($did,$mid)
+{
+    xdebug_break();
+    global $title;
+    $err = 0;
+    $q = QQ("SELECT * FROM DOCUMENTS WHERE ID = ?",array($did))->fetchArray();
+    if (!$q)
+        return $err;
+
+    $dr = DRow($did);
+    $msg = MRow($mid);
+    $epr = EPRow($dr['EID']);
+    if ($epr['FORWARDEMAIL'] && strlen($epr['FORWARDEMAIL']) > 1)
+    {
+        try
+        {
+            $mail = new PHPMailer(true);
+            $mail->CharSet = "UTF-8";
+            $fromm = $epr['ALIASEMAIL'];
+            if ($fromm == '')
+                $fromm = $topmail;
+            $mail->setFrom($fromm,$title);
+            $mail->addReplyTo($epr['EMAIL'],$epr['NAME']);
+            $mail->isMail();
+            
+            $mail->Subject = $dr['TOPIC'];
+            $mail->isHTML(true);
+
+            $mail->DKIM_domain = MAIL_DOMAIN;
+            $mail->DKIM_private = MAIL_RSA_PRIV;
+            $mail->DKIM_selector = MAIL_SELECTOR;
+            $mail->DKIM_passphrase = MAIL_RSA_PASSPHRASE;
+            $mail->DKIM_identity = MAIL_IDENTITY;
+                        
+            $message = sprintf('Προώθηση από ΣΗΔΕ με θέμα: <br><b>%s</b><br>',$dr['TOPIC']);
+            $pdff = GetBinary("MESSAGES","SIGNEDPDF",$msg['ID']);
+            if (strlen($pdff))
+                $mail->addStringAttachment($pdff,"document.pdf");
+    
+            // Attachments
+            $q5 = QQ("SELECT * FROM ATTACHMENTS WHERE MID = ?",array($msg['ID']));
+            while($r5 = $q5->fetchArray())
+            {
+                $f1 = tempnam(sys_get_temp_dir(),"tmp");
+                $todel[] = $f1;
+                $s = GetBinary('ATTACHMENTS','DATA',$r5['ID']);
+                if ($dr['CLASSIFIED'] > 0)
+                    $s = ed($s,$pwd,'d');
+
+                file_put_contents($f1,$s);
+                if ($dr['CLASSIFIED'] > 0)
+                {
+                    $mail->addAttachment($f1,ed($r5['NAME'],$pwd,'d'));
+                    $message .= sprintf('<br>Συνημμένο: <b>%s</b> [%s] <br>',ed($r5['NAME'],$pwd,'d'),ed($r5['DESC'],$pwd,'d'));
+
+                }
+                else
+                {
+                    $mail->addAttachment($f1,$r5['NAME']);
+                    $message .= sprintf('<br>Συνημμένο: <b>%s</b> [%s] <br>',$r5['NAME'],$r5['DESC']);
+                }
+            }
+            $hasR = 0;
+            $mail->addAddress($epr['FORWARDEMAIL'],$epr['FORWARDEMAIL']);
+
+            $mail->Body = $message;
+            $r =  $mail->send();
+            if ($r)
+                {
+                    $err = 0;
+                }
+            else
+                $err = 1;
+        }
+        catch(phpmailerException $e)
+        {
+            $err = 1;
+        }
+
+    }
+    return $err;
+}
 
 function RunRules($did)
 {
@@ -74,11 +167,6 @@ function RunRules($did)
 }
 
 
-// Also temp mails
-require_once "vendor/autoload.php";
-use ZBateson\MailMimeParser\MailMimeParser;
-use ZBateson\MailMimeParser\Message;
-use ZBateson\MailMimeParser\Header\HeaderConsts;
 
 $totalin = 0;
 
@@ -485,7 +573,10 @@ for($page = 1; ; $page++)
                     if ($mid && $did)
                     {
                         if (GetAttachments($attachments,$d->ProtocolNo,$oid_index,$did,$mid))   
-                            PostReceipt($oid_index,$d->ProtocolNo,$d->VersionNumber,$clsid,$prot);
+                            {
+                                PostReceipt($oid_index,$d->ProtocolNo,$d->VersionNumber,$clsid,$prot);
+                                SendAsMail($did,$mid);
+                            }
                     }
                     $totalin++;
                     RunRules($did);    
@@ -535,7 +626,10 @@ for($page = 1; ; $page++)
                     if ($mid && $did)
                     {
                         if (GetAttachments($attachments,$d->ProtocolNo,$oid_index,$did,$mid))
-                            PostReceipt($oid_index,$d->ProtocolNo,$d->VersionNumber,$clsid,$prot);
+                            {
+                                PostReceipt($oid_index,$d->ProtocolNo,$d->VersionNumber,$clsid,$prot);
+                                SendAsMail($did,$mid);
+                            }
                     }
                     $totalin++;
                     RunRules($did);    
