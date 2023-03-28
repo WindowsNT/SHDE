@@ -59,12 +59,20 @@ if (array_key_exists("did",$_POST))
 {    
     if (array_key_exists("intr",$_POST) && count($_POST['intr']) == 1 && $_POST['intr'][0] == '')
         $_POST['intr'] = array();
+    else
+        $_POST['intr'] = explode(",",$_POST['intr'][0]);
     if (array_key_exists("koinx",$_POST) && count($_POST['koinx']) == 1 && $_POST['koinx'][0] == '')
         $_POST['koinx'] = array();
+    else
+        $_POST['koinx'] = explode(",",$_POST['koinx'][0]);
     if (array_key_exists("bccx",$_POST) && count($_POST['bccx']) == 1 && $_POST['bccx'][0] == '')
         $_POST['bccx'] = array();
+    else
+         $_POST['bccx'] = explode(",",$_POST['bccx'][0]);
     if (array_key_exists("eswx",$_POST) && count($_POST['eswx']) == 1 && $_POST['eswx'][0] == '')
         $_POST['eswx'] = array();
+    else
+        $_POST['eswx'] = explode(",",$_POST['eswx'][0]);
 
 /* 
     // no need, picker already returns code
@@ -137,6 +145,8 @@ if ($er['LIMITCODES'] && strlen($er['LIMITCODES']))
     $restr = explode(",",$er['LIMITCODES']);
 if ($fr['LIMITCODES'] && strlen($fr['LIMITCODES']))
     $restr = explode(",",$fr['LIMITCODES']);
+if ($u->superadmin == 1)
+    $restr = array();
 $s1 = EchoShdePicker(random_int(700000,799999),"intr[]",$doc['RECPX'] && strlen($doc['RECPX']) ? unserialize($doc['RECPX']) : array(),1,$restr);
 echo $s1;
 echo '<br><br>Παραλήπτες εκτός ΚΣΗΔΕ από το βιβλίο διευθύνσεων:<br><br>';

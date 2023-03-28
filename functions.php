@@ -21,6 +21,8 @@ if ($iPod || $iPhone || $iPad)
     $mobile = 1;
 require_once "configuration.php";
 
+// Default Formatting for Options in Documents
+$defform = serialize(array("form_recp" => "0"));
 
 
 // Role IDs

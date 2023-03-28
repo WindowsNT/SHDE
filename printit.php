@@ -59,6 +59,7 @@ function NeedOE($did,$mid)
 
 function PrintRight($eid,$did,$mid)
 {
+    global $defform;
     $ep = QQ("SELECT * FROM ENDPOINTS WHERE ID = ?",array($eid))->fetchArray();
     if (!$ep)
         return "";
@@ -84,9 +85,16 @@ function PrintRight($eid,$did,$mid)
         $s .= sprintf('%s, Α.Π. %s &mdash; %s',$ep['A3'],$pr['n'],date("d/m/Y H:i",$pr['t']));
         }
 
+    $fmt = $defform;
+    if ($doc['FORMATTING'])
+        $fmt = unserialize($doc['FORMATTING']);
+
+    if ($fmt['form_recp'] == 1)
+        $s .= '<br><br><br>ΠΡΟΣ: <b>Πίνακα Αποδεκτών</b>   <br>';
+
     // Receipients 
     $rr = ReceipientArrayText($did);
-    if (count($rr))
+    if (count($rr) && $fmt['form_recp'] == 0)
     {
         $cnx = 1;
         $s .= '<br><br><br>ΠΡΟΣ:<br>';
@@ -101,7 +109,7 @@ function PrintRight($eid,$did,$mid)
 
     // Receipients 
     $rr = KoinArrayText($did);
-    if (count($rr))
+    if (count($rr) && $fmt['form_recp'] == 0)
     {
         $cnx = 1;
         $s .= '<br>KOIN:<br>';
@@ -224,6 +232,58 @@ function PrintEsw($doc)
 
   return $s;
 }
+
+
+
+function PrintRT($doc)
+{
+    global $defform;
+    $fmt = $defform;
+    if ($doc['FORMATTING'])
+        $fmt = unserialize($doc['FORMATTING']);
+
+    if ($fmt['form_recp'] != 1)
+        return;
+
+        $s = '';
+    $did = $doc['ID'];
+
+  // Receipients 
+  $rr = ReceipientArrayText($did);
+  $cnx = 1;
+  if (count($rr))
+  {
+      $cnx = 1;
+      $s .= '<b>Παραλήπτες</b>:<hr>';
+
+      $cnx = 1;
+      foreach($rr as $r)
+      {
+          $s .= sprintf("<b>%s.</b> %s<br>",$cnx,$r);
+          $cnx++;
+      }
+      $s .= '<br>';
+  }
+
+  // Receipients 
+  $rr = KoinArrayText($did);
+  if (count($rr))
+  {
+      $cnx = 1;
+      $s .= '<b>Κοινοποιήσεις</b>:<hr>';
+
+      $cnx = 1;
+      foreach($rr as $r)
+      {
+          $s .= sprintf("<b>%s.</b> %s<br>",$cnx,$r);
+          $cnx++;
+      }
+      $s .= '<br>';
+  }
+
+    return $s;
+}
+
 function PrintAll($did,$mid)
 {
     $doc = DRow($did,1);
@@ -277,6 +337,7 @@ function PrintAll($did,$mid)
     $s .= sprintf('<td width="50%%" style="text-align: center;">%s</td>',PrintSignature($doc));
     $s .= sprintf('</tr>');
     $s .= sprintf('</table>');
+    $s .= PrintRT($doc);
     $s .= PrintAttachments($doc,$msg,$msg['ID']);
     $s .= PrintEsw($doc);
     if ($doc['ORIGINALITY'] == 1)
