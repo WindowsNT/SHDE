@@ -85,16 +85,17 @@ function PrintRight($eid,$did,$mid)
         $s .= sprintf('%s, Α.Π. %s &mdash; %s',$ep['A3'],$pr['n'],date("d/m/Y H:i",$pr['t']));
         }
 
-    $fmt = $defform;
+    $fmt = unserialize($defform);
     if ($doc['FORMATTING'])
         $fmt = unserialize($doc['FORMATTING']);
-
-    if ($fmt['form_recp'] == 1)
+     if (!is_array($fmt) || !$fmt)
+        $fmt =unserialize($defform);
+     if ($fmt['form_recp'] == 1)
         $s .= '<br><br><br>ΠΡΟΣ: <b>Πίνακα Αποδεκτών</b>   <br>';
 
     // Receipients 
     $rr = ReceipientArrayText($did);
-    if (count($rr) && $fmt['form_recp'] == 0)
+    if (count($rr))
     {
         $cnx = 1;
         $s .= '<br><br><br>ΠΡΟΣ:<br>';
@@ -238,7 +239,7 @@ function PrintEsw($doc)
 function PrintRT($doc)
 {
     global $defform;
-    $fmt = $defform;
+    $fmt =unserialize($defform);
     if ($doc['FORMATTING'])
         $fmt = unserialize($doc['FORMATTING']);
 
