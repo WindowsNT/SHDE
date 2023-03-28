@@ -34,6 +34,7 @@ NOT_Scripts();
 if (array_key_exists("c",$_POST))
 {
     $ur = UserRow($u->uid);
+    $_POST['formatting'] = serialize(array("form_recp" => $_POST['form_recp']));
     if (!array_key_exists("classification",$_POST))
         $_POST['classification']  = 0;
     if ($ur['CLASSIFIED'] < $_POST['classification'])
@@ -74,14 +75,14 @@ if (array_key_exists("c",$_POST))
         $dr= DRow($_POST['did'],1);
         if ($dr['UID'] != $u->uid)
             $notified[] = $dr['UID'];
-        QQ("UPDATE DOCUMENTS SET ENTRYCREATED = ?,TOPIC = ?,UID = ?,FID = ?,CLASSIFIED = ?,PRIORITY = ?,TYPE = ?,CATEGORY = ?,ORIGINALITY = ?,DUEDATE = ?,COLOR = ?,ADDEDSIGNERS = ?,PDFPASSWORD = ?,SIGNERTITLES = ? WHERE ID = ?",array(time(),$_POST['topic'],$u->uid,$_POST['parent'],$_POST['classification'],$_POST['priority'],$_POST['type'],$_POST['category'],$_POST['originality'],strtotime($_POST['due']),$_POST['color'],implode(",",$_POST['addedsigners']),$_POST['pdf1'],$_POST['signertitles'],$_POST['did']));
+        QQ("UPDATE DOCUMENTS SET ENTRYCREATED = ?,TOPIC = ?,UID = ?,FID = ?,CLASSIFIED = ?,PRIORITY = ?,TYPE = ?,CATEGORY = ?,ORIGINALITY = ?,FORMATTING =?,DUEDATE = ?,COLOR = ?,ADDEDSIGNERS = ?,PDFPASSWORD = ?,SIGNERTITLES = ? WHERE ID = ?",array(time(),$_POST['topic'],$u->uid,$_POST['parent'],$_POST['classification'],$_POST['priority'],$_POST['type'],$_POST['category'],$_POST['originality'],$_POST['formatting'],strtotime($_POST['due']),$_POST['color'],implode(",",$_POST['addedsigners']),$_POST['pdf1'],$_POST['signertitles'],$_POST['did']));
         $fid = $_POST['parent'];
     }
     else
         {
             $fid = QQ("SELECT * FROM FOLDERS WHERE SPECIALID = ? AND EID = ?",array(FOLDER_OUTBOX,$_POST['eid']))->fetchArray()['ID'];
             $clsid = guidv4();
-            QQ("INSERT INTO DOCUMENTS (ENTRYCREATED,UID,EID,TOPIC,FID,CLASSIFIED,PRIORITY,TYPE,CATEGORY,ORIGINALITY,DUEDATE,CLSID,COLOR,ADDEDSIGNERS,PDFPASSWORD,SIGNERTITLES) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array(
+            QQ("INSERT INTO DOCUMENTS (ENTRYCREATED,UID,EID,TOPIC,FID,CLASSIFIED,PRIORITY,TYPE,CATEGORY,ORIGINALITY,FORMATTING,DUEDATE,CLSID,COLOR,ADDEDSIGNERS,PDFPASSWORD,SIGNERTITLES) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array(
                 time(),
                 $u->uid,
                 $_POST['eid'],
@@ -92,6 +93,7 @@ if (array_key_exists("c",$_POST))
                 $_POST['type'],
                 $_POST['category'],
                 $_POST['originality'],
+                $_POST['formatting'],
                 $_POST['due'] ? strtotime($_POST['due']) : '',
                 $clsid,
                 $_POST['color'],
@@ -153,9 +155,11 @@ $readonly = 0;
 if (array_key_exists("did",$req))
     {
         $doc = DRow($req['did'],1);
+        if (!$doc['FORMATTING'])
+            $doc['FORMATTING'] = $defform;
     }
 else
-    $doc = array("ID" => "","TOPIC" => "","EID" => "","CLASSIFIED" => "","TYPE" => "0","COLOR" => "#000000","ORIGINALITY" => 0,"CATEGORY" => "5","PRIORITY" => "0", "DUEDATE" => 0, "ADDEDSIGNERS" => "", "PDFPASSWORD" => "", "SIGNERTITLES" => "");
+    $doc = array("ID" => "","TOPIC" => "","EID" => "","CLASSIFIED" => "","TYPE" => "0","COLOR" => "#000000","ORIGINALITY" => 0,"FORMATTING" => $defform,"CATEGORY" => "5","PRIORITY" => "0", "DUEDATE" => 0, "ADDEDSIGNERS" => "", "PDFPASSWORD" => "", "SIGNERTITLES" => "");
 
 if (array_key_exists("mid",$req))
     {
@@ -338,6 +342,15 @@ else
     <div class="column">
     Πληροφορίες: <br>
     <input type="text" class="input" name="info" value="<?= $msg['INFO']?>" />
+    
+    <br>
+    Μορφή Παραληπτών:
+        <select name="form_recp" class="input chosen-select">
+            <option value="0" <?= unserialize($doc['FORMATTING'])['form_recp'] == 0 ? "selected" : "" ?>>Πάνω</option>
+            <option value="1" <?= unserialize($doc['FORMATTING'])['form_recp'] == 1 ? "selected" : "" ?>>Πίνακας Αποδεκτών</option>
+        </select>
+        <br>
+    
     </div>
     <div class="column">
     Χρώμα:<br>
