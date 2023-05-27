@@ -181,8 +181,8 @@ $showcomm = 1; if (array_key_exists("shde_hide_comments",$_SESSION) && $_SESSION
     if (array_key_exists("oid",$req)) $xoid = $req['oid'];
     if (array_key_exists("eid",$req)) $xeid = $req['eid'];
     if (array_key_exists("fid",$req)) $xfid = $req['fid'];
-    $prov = sprintf(' <div class="dropdown is-hoverable">
-    <div class="dropdown-trigger">
+    $prov = sprintf(' &nbsp;<div class="dropdown is-hoverable ">
+    <div class="dropdown-trigger block">
       <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu13">
         <span>Προβολή</span>
       </button>
@@ -221,16 +221,16 @@ $showcomm = 1; if (array_key_exists("shde_hide_comments",$_SESSION) && $_SESSION
             $xoid,$xeid,$xfid,$showcomm == 1 ? '<b>Σχόλια</b>' : 'Σχόλια'
         );
 
-    $buttons = ' &nbsp; <button href="shdeincoming.php" class="button autobutton is-success">Λήψη</button> &nbsp; <button href="send.php" class="button autobutton is-link">Αποστολή</button> &nbsp; <button href="neweggr.php" class="button autobutton is-primary">Νέο Έγγραφο</button> &nbsp;';
-    $buttons .= $prov;
+    $buttons = ' &nbsp; <button href="shdeincoming.php" class="button autobutton is-success block">Λήψη</button> &nbsp; <button href="send.php" class="button autobutton is-link block">Αποστολή</button> &nbsp; <button href="neweggr.php" class="button autobutton is-primary  block">Νέο Έγγραφο</button> &nbsp;';
 
     if (!array_key_exists("q",$req))
-    $src = sprintf(' &nbsp; <button href="search.php?q_oids=%s&q_eids=%s&q_fids=%s" class="block button autobutton is-warning">Αναζήτηση</button> ',$req['oid'],$req['eid'],$req['fid']);
+    $src = sprintf(' &nbsp; <button href="search.php?q_oids=%s&q_eids=%s&q_fids=%s" class="block button autobutton is-warning block">Αναζήτηση</button> ',$req['oid'],$req['eid'],$req['fid']);
 else
-$src = sprintf(' &nbsp; <button href="search.php?q_oids=%s&q_eids=%s&q_fids=%s&q_topic=%s&q_text=%s" class="block button autobutton is-warning">Προχωρημένη Αναζήτηση</button> ',$req['oid'],$req['eid'],$req['fid'],$req['q_topic'],$req['q_text']);
+$src = sprintf(' &nbsp; <button href="search.php?q_oids=%s&q_eids=%s&q_fids=%s&q_topic=%s&q_text=%s" class="block button autobutton is-warning block">Προχωρημένη Αναζήτηση</button> ',$req['oid'],$req['eid'],$req['fid'],$req['q_topic'],$req['q_text']);
 
         $buttons .= $src;
-PrintHeader('index.php',$buttons);
+        $buttons .= $prov;
+        PrintHeader('index.php',$buttons);
 
 //    echo $prov;
           

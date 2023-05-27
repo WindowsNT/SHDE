@@ -171,7 +171,7 @@ function PrintHeader($back = '',$front = '')
       if ($u)
         {
             if (strlen($back) || strlen($front))
-                $back = sprintf('<button href="%s" class="autobutton button is-danger">Πίσω</button> %s',$back,$front);
+                $back = sprintf('<button href="%s" class="autobutton button is-danger block">Πίσω</button> %s',$back,$front);
             $cols = '<nav class="level">
             <div class="level-left">
             <div class="level-item">
@@ -184,7 +184,7 @@ function PrintHeader($back = '',$front = '')
             </div>
           </div>
           <div class="content" style="margin:20px">';
-            $logoutx = sprintf('<button href="logout.php?return=index.php" class="button  is-danger autobutton"><img src="icon.svg" width="20" height="20" /> &nbsp; Logout &mdash;&nbsp; <b>%s %s</b></button>',$u->lastname,$u->firstname);
+            $logoutx = sprintf('<button href="logout.php?return=index.php" class="button  is-danger autobutton block"><img src="icon.svg" width="20" height="20" /> &nbsp; Logout &mdash;&nbsp; <b>%s %s</b></button>',$u->lastname,$u->firstname);
             if ($mobile)
             printf('%s %s<div class="content" style="margin:20px">',$back,$logoutx);
             else
@@ -192,7 +192,7 @@ function PrintHeader($back = '',$front = '')
         }
         else
         {
-            $s2 = sprintf('<img src="icon.svg" width="40" height="40" /> <div class="dropdown is-hoverable">
+            $s2 = sprintf('<img src="icon.svg" width="40" height="40" />  <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
               <button class="button is-link" aria-haspopup="true" aria-controls="dropdown-menu46">
                 <span>Login</span>
@@ -223,7 +223,7 @@ function PrintHeader($back = '',$front = '')
             </div>
           </div> 
           
-          <button class="button is-secondary" >
+          <img src="ed.png" width="40" height="40" />  <button class="button is-secondary" >
           MSA-APPS.COM SHDE
     </button>
 ';

@@ -21,7 +21,7 @@ function SuperAdminSection()
     <button class="autobutton is-danger button block" href="roles.php">Ρόλοι</button>
     <button class="autobutton is-success button block" href="organizations.php">Φορείς</button>
     <button class="autobutton is-primary button block" href="endpoints.php">Endpoints</button>
-    <button class="autobutton is-warning button block" href="orgchart.php">Οργανόγραμμα</button>
+    <button class="autobutton is-link button block" href="orgchart.php?reload=1">Reload Οργανόγραμμα</button>
     <button class="autobutton is-danger button block" href="impersonate.php">Impersonation</button>
     <button class="autobutton is-link button block" href="update.php">SHDE Update</button>
   </div>
@@ -261,7 +261,7 @@ if (array_key_exists("resetshde",$req))
  {
  ?>
     
- Το <b>Σύστημα Ηλεκτρονικής Διακίνησης Εγγράφων</b> του Μουσικού Σχολείου Αλίμου είναι συμβατό και <a href="https://www.msa-apps.com/13381.pdf" target="_blank"><b>συνδεδεμένο</b></a>  με το <b>ΚΣΗΔΕ</b> του Υπουργείου Ψηφιακής Διακυβέρνησης.
+ Το <b>Σύστημα Ηλεκτρονικής Διακίνησης Εγγράφων</b> του Μουσικού Σχολείου Αλίμου είναι <a href="https://www.msa-apps.com/13381.pdf" target="_blank">συνδεδεμένο</a>  με το <a href="https://support.mindigital-shde.gr/" target="_blank">ΚΣΗΔΕ</a> και <a href="https://www.msa-apps.com/award.php" target="_blank"><b>βραβευμένο</b></a> από το Υπουργείου Ψηφιακής Διακυβέρνησης.
  <div class="columns">
   <div class="column">
  <br><br>Χαρακτηριστικά:<hr>
