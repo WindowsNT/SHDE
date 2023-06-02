@@ -223,7 +223,7 @@ function PrintHeader($back = '',$front = '')
             </div>
           </div> 
           
-          <img src="ed.png" width="40" height="40" />  <button class="button is-secondary" >
+          <img src="ed.png" width="40" height="40" /> <a href="https://www.digitalawards.gov.gr" target="_blank"><img src="award.png" width="40" height="40" title="Βραβείο Υπουργείου Ψηφιακής Διακυβέρνησης"/></a>  <button class="button is-secondary" >
           MSA-APPS.COM SHDE
     </button>
 ';

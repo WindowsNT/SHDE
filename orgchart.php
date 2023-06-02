@@ -4,6 +4,7 @@
 require_once "functions.php";
 if (!$u)
     diez();
+set_time_limit(120);
 require_once "output.php";
 if ($u->superadmin)
     PrintHeader('index.php','&nbsp; <button class="button is-success autobutton" href="orgchart.php?table=1">Μορφή Πίνακα</button> &nbsp; <button class="button is-link autobutton" href="orgchart.php?reload=1">Ανανέωση</button>');

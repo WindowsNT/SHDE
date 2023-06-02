@@ -261,7 +261,7 @@ if (array_key_exists("resetshde",$req))
  {
  ?>
     
- Το <b>Σύστημα Ηλεκτρονικής Διακίνησης Εγγράφων</b> του Μουσικού Σχολείου Αλίμου είναι <a href="https://www.msa-apps.com/13381.pdf" target="_blank">συνδεδεμένο</a>  με το <a href="https://support.mindigital-shde.gr/" target="_blank">ΚΣΗΔΕ</a> και <a href="https://www.msa-apps.com/award.php" target="_blank"><b>βραβευμένο</b></a> από το Υπουργείου Ψηφιακής Διακυβέρνησης.
+ Το <b>Σύστημα Ηλεκτρονικής Διακίνησης Εγγράφων</b> του Μουσικού Σχολείου Αλίμου είναι <a href="https://www.msa-apps.com/13381.pdf" target="_blank">συνδεδεμένο</a>  με το <a href="https://support.mindigital-shde.gr/" target="_blank">ΚΣΗΔΕ</a> και <a href="https://www.msa-apps.com/award.php" target="_blank"><b>βραβευμένο</b></a> από το Υπουργείο Ψηφιακής Διακυβέρνησης.
  <div class="columns">
   <div class="column">
  <br><br>Χαρακτηριστικά:<hr>
