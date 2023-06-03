@@ -249,7 +249,7 @@ else
 {
 
     if ($u->superadmin)
-        PrintHeader('index.php','&nbsp; <button class="button is-primary autobutton" href="organizations.php?oid=0">Νέος Φορέας</button> ');
+        PrintHeader('index.php','&nbsp; <button class="button is-primary autobutton block" href="organizations.php?oid=0">Νέος Φορέας</button> ');
     else
         PrintHeader('index.php');
     PrintOrganzations();

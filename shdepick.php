@@ -10,11 +10,40 @@ if (array_key_exists("from",$req))
     $selected = explode(",",$req['from']);
 }
 
-function OrgTree3($top = 0,$mustActive = 1,$sel = array(),$restr = array())
+$chart = LoadChart();
+function OrgTree3($root = null,$topunused = 0,$mustActive = 1,$sel = array(),$restr = array())
 {
     $fis = '';
+    $fis .= sprintf('<ul>');
+    foreach($root as $r2)
+    {
+        if (count($restr) > 0 && !in_array($r2['CODE'],$restr))
+            continue;
+        $n = $r2['NAME'];
+        if ($r2['ACTIVE'] == 1)
+            $n = sprintf('<b>%s</b>',$r2['NAME']);
+        $c = $r2['CODE2'];
+        if ($r2['SDDD'] == 1)
+            $c = sprintf('<b>%s</b>',$r2['CODE2']);
 
-    if ($top == 0)
+        if ($mustActive && $r2['ACTIVE'] == 0)
+            $fis .= sprintf('<li id="%s"><a href="#" class="jstree-disabled"><span class="jname">[%s] %s</span></a>',$r2['CODE'], $c,$n);
+        else
+        if (in_array($r2['CODE'],$sel))
+            {
+                $fis .= sprintf('<li id="%s"><a href="#" class="jstree-clicked jstree-open"><span class="jname">[%s] %s</span></a>',$r2['CODE'],$c,$n);
+            }
+        else
+            $fis .= sprintf('<li id="%s"><span class="jname">[%s] %s</span>',$r2['CODE'],$c,$n);
+
+        if ($r2['items'])
+            $fis .= OrgTree3($r2['items'],0,$mustActive,$sel,array());
+        $fis .= '</li>';
+    }
+    $fis .= '</ul>';
+
+
+/*    if ($top == 0)
     {
         $q1 = QQ("SELECT * FROM ORGCHART WHERE PARENT = 0 ORDER BY NAME ASC");
         while($r1 = $q1->fetchArray())
@@ -72,8 +101,8 @@ function OrgTree3($top = 0,$mustActive = 1,$sel = array(),$restr = array())
         }
         $fis .= '</ul>';
     }
-    return $fis;
-
+*/
+return $fis;
 }
 
 if (!array_key_exists("active",$req))
@@ -93,9 +122,10 @@ else
 <div class="content" style="margin:20px">
 Filter: <input class="input" id="filter" />
 <div id="jstree">
-<ul>
-<?= OrgTree3(0,$req['active'],$selected,$req['restr']); ?>
-</ul>
+<?php
+$x = OrgTree3($chart,0,$req['active'],$selected,$req['restr']); 
+echo $x;
+?>
 </div>
 <br><br><hr>
 <button type="button" class="button is-large is-link" onclick="pick(1);">Επιλογή</button>

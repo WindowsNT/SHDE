@@ -12,7 +12,6 @@ $str = OidOrgchartStdclass($req['oid']);
 $j = json_encode($str);
 printr($str);
 
-
 $authorization = '';
 $c = curl_init();
 $st = ShdeUrl($req['oid']) . '/orgchart';

@@ -7,9 +7,9 @@ if (!$u)
 set_time_limit(120);
 require_once "output.php";
 if ($u->superadmin)
-    PrintHeader('index.php','&nbsp; <button class="button is-success autobutton" href="orgchart.php?table=1">Μορφή Πίνακα</button> &nbsp; <button class="button is-link autobutton" href="orgchart.php?reload=1">Ανανέωση</button>');
+    PrintHeader('index.php','&nbsp; <button class="button is-success autobutton block" href="orgchart.php?table=1">Μορφή Πίνακα</button> &nbsp; <button class="button is-link autobutton block" href="orgchart.php?reload=1">Ανανέωση</button>');
 else
-    PrintHeader('index.php','&nbsp; <button class="button is-small is-success autobutton" href="orgchart.php?table=1">Μορφή Πίνακα</button> ');
+    PrintHeader('index.php','&nbsp; <button class="button is-small is-success autobutton block" href="orgchart.php?table=1">Μορφή Πίνακα</button> ');
 
 $example_orgchart = '{
 "Version": 1,
@@ -108,6 +108,34 @@ function AddDep($j,$par,$deps = 0,$rootx = 0)
         AddDep($ch,$id,1,$rootx);
 }
 
+
+$allmap = array();
+function LoadAll()
+{
+    global $allmap;
+    QQ("BEGIN TRANSACTION");
+    $q1 = QQ("SELECT * FROM ORGCHART");
+    while($r1 = $q1->fetchArray())
+        $allmap[] = $r1;
+    QQ("ROLLBACK");
+}
+
+$allmap2 = array();
+function LoadAll2($parent = 0,array& $what = null)
+{
+    global $allmap;
+    foreach($allmap as $row)
+    {
+        if ((int)$parent == (int)$row['PARENT'])
+        {
+            $items = array();
+            LoadAll2($row['ID'],$items);
+            $row["items"] = $items;
+            $what[$row['ID']] = $row;
+        }
+    }
+}
+
 function ReceiveOrgLive()
 {
     global $siteroot;
@@ -144,6 +172,7 @@ function ReceiveOrgLive()
     foreach($j->RootNode->ChildNodes as $ch)
         AddDep($ch,0,0,0);
     QQ("COMMIT");
+
 }
 
 if (array_key_exists("reload",$req) && $u->superadmin)
@@ -157,6 +186,17 @@ if (array_key_exists("reload",$req) && $u->superadmin)
             QQ("UPDATE ORGCHART SET FULLNAME = ? WHERE ID = ?",array(implode("&mdash;",array_reverse($fn)),$r1['ID']));
         }
         QQ("COMMIT");
+
+
+        // And serialize
+        global $allmap2;
+        LoadAll();
+        LoadAll2(0,$allmap2);
+        $s = serialize($allmap2);
+        QQ("DELETE FROM ORGCHARTCACHE WHERE MODE = 0");
+        QQ("INSERT INTO ORGCHARTCACHE (MODE,DATA) VALUES(?,?)",array(1,$s));
+    
+
         redirect("orgchart.php");
         die;
     }
@@ -192,6 +232,8 @@ function OrgTree2($top = 0)
     return $fis;
 }
 
+
+/*
 function OrgTree3($top = 0)
 {
     global $req;
@@ -208,6 +250,8 @@ function OrgTree3($top = 0)
      if (array_key_exists("active",$req))
         $mustActive = 1;
 
+    if ($top == 0)
+        QQ("BEGIN TRANSACTION");
     if ($top == 0)
     {
         $q1 = QQ("SELECT * FROM ORGCHART WHERE PARENT = 0 ORDER BY NAME ASC");
@@ -249,13 +293,14 @@ function OrgTree3($top = 0)
         $fis .= '</ul>';
     }
     $fis .= '</div>';
+    if ($top == 0)
+        QQ("ROLLBACK");
     return $fis;
-
 }
-
+*/
+/*
 function OrgTree4()
 {
-
     $f = '<table class="table datatable"><thead><th>ID</th><th>Code</th><th>Section</th><td>SDDD</th><th>Enabled</th><th>Όνομα</th></thead><tbody>';
     QQ("BEGIN TRANSACTION");
 
@@ -276,8 +321,50 @@ function OrgTree4()
     return $f;
 }
 
+*/
+//die;
 
-if (array_key_exists("table",$req))
+/*if (array_key_exists("table",$req))
     echo OrgTree4();
 else
     echo OrgTree3(0);
+*/
+
+function OrgTree5(array& $top)
+{
+    global $req;
+    echo '<style>
+    li {
+        font-size: 14px;
+        margin-left: 10px;
+        list-style-type: circle;
+     }
+     </style>
+     <div class="content">';
+
+     $mustActive = 0;
+     if (array_key_exists("active",$req))
+        $mustActive = 1;
+
+    echo sprintf('<ul>');
+    foreach($top as $r1)
+    {
+        $n = $r1['NAME'];
+        if ($r1['ACTIVE'] == 1)
+            $n = sprintf('<b>%s</b>',$r1['NAME']);
+        if ($mustActive && $r1['ACTIVE'] == 0)
+            $n = '';
+        $c = $r1['CODE2'];
+        if ($r1['SDDD'] == 1)
+            $c = sprintf('<b>%s</b>',$r1['CODE2']);
+
+        echo sprintf('<li>[%s] %s', $c,$n);
+        echo OrgTree5($r1['items']);
+        echo  '</li>';
+    }
+    echo sprintf('</ul>');
+    echo '</div>';
+}
+
+$chart = LoadChart();
+OrgTree5($chart);
