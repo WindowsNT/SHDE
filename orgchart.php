@@ -166,6 +166,7 @@ function ReceiveOrgLive()
     curl_setopt($c, CURLOPT_REFERER, $siteroot);
     $r = curl_exec($c);
     $j = json_decode($r);
+//    printdie($j);
     QQ("DELETE FROM ORGCHART");
     QQ("BEGIN TRANSACTION;");
     QQ("UPDATE ORGCHART SET ACTIVE = 0");

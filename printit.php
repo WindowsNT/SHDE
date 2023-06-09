@@ -342,7 +342,10 @@ function PrintAll($did,$mid)
     $s .= PrintAttachments($doc,$msg,$msg['ID']);
     $s .= PrintEsw($doc);
     if ($doc['ORIGINALITY'] == 1)
-        $s .= '<br>ΑΚΡΙΒΕΣ ΑΝΤΙΓΡΑΦΟ';
-
+        {
+            $s .= '<br>ΑΚΡΙΒΕΣ ΑΝΤΙΓΡΑΦΟ';
+            if ($doc['ORIGINALITYEXTRA'] && strlen($doc['ORIGINALITYEXTRA']))
+                $s .= '<br>'.$doc['ORIGINALITYEXTRA'];
+        }
     return $s;
 }

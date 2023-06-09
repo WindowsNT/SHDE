@@ -75,14 +75,14 @@ if (array_key_exists("c",$_POST))
         $dr= DRow($_POST['did'],1);
         if ($dr['UID'] != $u->uid)
             $notified[] = $dr['UID'];
-        QQ("UPDATE DOCUMENTS SET ENTRYCREATED = ?,TOPIC = ?,UID = ?,FID = ?,CLASSIFIED = ?,PRIORITY = ?,TYPE = ?,CATEGORY = ?,ORIGINALITY = ?,FORMATTING =?,DUEDATE = ?,COLOR = ?,ADDEDSIGNERS = ?,PDFPASSWORD = ?,SIGNERTITLES = ? WHERE ID = ?",array(time(),$_POST['topic'],$u->uid,$_POST['parent'],$_POST['classification'],$_POST['priority'],$_POST['type'],$_POST['category'],$_POST['originality'],$_POST['formatting'],strtotime($_POST['due']),$_POST['color'],implode(",",$_POST['addedsigners']),$_POST['pdf1'],$_POST['signertitles'],$_POST['did']));
+        QQ("UPDATE DOCUMENTS SET ENTRYCREATED = ?,TOPIC = ?,UID = ?,FID = ?,CLASSIFIED = ?,PRIORITY = ?,TYPE = ?,CATEGORY = ?,ORIGINALITY = ?,FORMATTING =?,DUEDATE = ?,COLOR = ?,ADDEDSIGNERS = ?,PDFPASSWORD = ?,SIGNERTITLES = ?,ORIGINALITYEXTRA = ? WHERE ID = ?",array(time(),$_POST['topic'],$u->uid,$_POST['parent'],$_POST['classification'],$_POST['priority'],$_POST['type'],$_POST['category'],$_POST['originality'],$_POST['formatting'],strtotime($_POST['due']),$_POST['color'],implode(",",$_POST['addedsigners']),$_POST['pdf1'],$_POST['signertitles'],$_POST['originalityextra'],$_POST['did']));
         $fid = $_POST['parent'];
     }
     else
         {
             $fid = QQ("SELECT * FROM FOLDERS WHERE SPECIALID = ? AND EID = ?",array(FOLDER_OUTBOX,$_POST['eid']))->fetchArray()['ID'];
             $clsid = guidv4();
-            QQ("INSERT INTO DOCUMENTS (ENTRYCREATED,UID,EID,TOPIC,FID,CLASSIFIED,PRIORITY,TYPE,CATEGORY,ORIGINALITY,FORMATTING,DUEDATE,CLSID,COLOR,ADDEDSIGNERS,PDFPASSWORD,SIGNERTITLES) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array(
+            QQ("INSERT INTO DOCUMENTS (ENTRYCREATED,UID,EID,TOPIC,FID,CLASSIFIED,PRIORITY,TYPE,CATEGORY,ORIGINALITY,FORMATTING,DUEDATE,CLSID,COLOR,ADDEDSIGNERS,PDFPASSWORD,SIGNERTITLES,ORIGINALITYEXTRA) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array(
                 time(),
                 $u->uid,
                 $_POST['eid'],
@@ -100,6 +100,7 @@ if (array_key_exists("c",$_POST))
                 implode(",",$_POST['addedsigners']),
                 $_POST['pdf1'],
                 $_POST['signertitles'],
+                $_POST['originalityextra']
             ));
             $_POST['did'] = $lastRowID;
 
@@ -159,7 +160,7 @@ if (array_key_exists("did",$req))
             $doc['FORMATTING'] = $defform;
     }
 else
-    $doc = array("ID" => "","TOPIC" => "","EID" => "","CLASSIFIED" => "","TYPE" => "0","COLOR" => "#000000","ORIGINALITY" => 0,"FORMATTING" => $defform,"CATEGORY" => "5","PRIORITY" => "0", "DUEDATE" => 0, "ADDEDSIGNERS" => "", "PDFPASSWORD" => "", "SIGNERTITLES" => "");
+    $doc = array("ID" => "","TOPIC" => "","EID" => "","CLASSIFIED" => "","TYPE" => "0","COLOR" => "#000000","ORIGINALITY" => 0,"FORMATTING" => $defform,"CATEGORY" => "5","PRIORITY" => "0", "DUEDATE" => 0, "ADDEDSIGNERS" => "", "PDFPASSWORD" => "", "SIGNERTITLES" => "","ORIGINALITYEXTRA" => "");
 
 if (array_key_exists("mid",$req))
     {
@@ -365,6 +366,9 @@ else
     <div class="column is-one-third">
     <?php
     printf('Τίτλοι υπογραφόντων:<br><input name="signertitles" type="text" class="input" id="signertitles" value="%s"><br>',$doc['SIGNERTITLES'] ? $doc['SIGNERTITLES']  : '' );
+    ?>
+    <?php
+    printf('Επιπλέον πληροφορίες για Ακριβές Αντίγραφο:<br><input name="originalityextra" type="text" class="input" id="originalityextra" value="%s"><br>',$doc['ORIGINALITYEXTRA'] ? $doc['ORIGINALITYEXTRA']  : '' );
     ?>
 
 </div>

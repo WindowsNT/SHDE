@@ -45,7 +45,6 @@ if ($doc['TYPE'] == 2)
         die;
     }
     header(sprintf("Content-Type: %s",$msg['MIME']));
-    xdebug_break();
     if ($msg['MIME'] != "application/pdf")
         {
             $ext = mime_type($msg['MIME'],1);
