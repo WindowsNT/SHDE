@@ -182,7 +182,7 @@ if (array_key_exists("lid",$req))
 }
 else
 {
-PrintHeader('endpoints.php',sprintf('&nbsp; <button class="button is-primary autobutton" href="lockers.php?lid=0&eid=%s&oid=%s">Νέα Θυρίδα</button>',$eid,$oid));
+PrintHeader('endpoints.php',sprintf('&nbsp; <button class="button is-primary autobutton block" href="lockers.php?lid=0&eid=%s&oid=%s">Νέα Θυρίδα</button>',$eid,$oid));
 PrintLockers();
 }
 

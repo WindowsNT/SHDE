@@ -4,7 +4,7 @@ require_once "functions.php";
 if (!$u)
     diez();
 require_once "output.php";
-PrintHeader('index.php','&nbsp; <button class="button is-primary is-small autobutton" href="ab.php?e=0">Νέα διεύθυνση</button> &nbsp; <button class="button is-link autobutton is-small" href="ab.php?vcf=1">VCF Import</button> &nbsp; <button class="button is-link autobutton is-small" href="ab.php?users=1">Users Import</button> ');
+PrintHeader('index.php','&nbsp; <button class="button is-primary autobutton block" href="ab.php?e=0">Νέα διεύθυνση</button> &nbsp; <button class="button is-link autobutton block" href="ab.php?vcf=1">VCF Import</button> &nbsp; <button class="button is-link autobutton block" href="ab.php?users=1">Users Import</button> <span></span>');
 
 if (array_key_exists("delete",$req))
 {

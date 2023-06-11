@@ -271,7 +271,7 @@ if (array_key_exists("eid",$req))
 else
 {
     if ($u->superadmin || count($u->fadmin))
-        PrintHeader('index.php','&nbsp; <button class="button is-primary autobutton" href="endpoints.php?eid=0">Νέο Endpoint</button>');
+        PrintHeader('index.php','&nbsp; <button class="button is-primary autobutton block" href="endpoints.php?eid=0">Νέο Endpoint</button>');
     else
         PrintHeader('index.php');
     $oid = 0;

@@ -7,7 +7,7 @@ if (!$u)
 set_time_limit(120);
 require_once "output.php";
 if ($u->superadmin)
-    PrintHeader('index.php','&nbsp; <button class="button is-success autobutton block" href="orgchart.php?table=1">Μορφή Πίνακα</button> &nbsp; <button class="button is-link autobutton block" href="orgchart.php?reload=1">Ανανέωση</button>');
+    PrintHeader('index.php','&nbsp; <button class="button is-success autobutton block" href="orgchart.php?table=1">Μορφή Πίνακα</button> &nbsp; <button class="button is-link autobutton block" href="orgchart.php?reload=1">Ανανέωση</button><span></span>');
 else
     PrintHeader('index.php','&nbsp; <button class="button is-small is-success autobutton block" href="orgchart.php?table=1">Μορφή Πίνακα</button> ');
 

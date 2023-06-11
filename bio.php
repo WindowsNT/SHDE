@@ -391,7 +391,7 @@ if ($u && $u->uid > 0)
 
     if (!$infail)
         {
-            PrintHeader('index.php','&nbsp; <button class="is-primary button is-small" onclick="newregistration();">Δημιουργία Βιομετρικού Login</button>');
+            PrintHeader('index.php','&nbsp; <button class="is-primary button block" onclick="newregistration();">Δημιουργία Βιομετρικού Login</button>');
     }
         $cnt = 0;
     if (!$infail)

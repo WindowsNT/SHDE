@@ -96,7 +96,7 @@ if (array_key_exists("new",$req))
 }
 
 if ($u->superadmin || count($u->fadmin))
-    PrintHeader('endpoints.php',sprintf('&nbsp; <button class="button is-primary is-small autobutton" href="rules.php?new=0&eid=%s&oid=%s">Νέο Rule</button>',$req['eid'],$req['oid']));
+    PrintHeader('endpoints.php',sprintf('&nbsp; <button class="button is-primary block autobutton" href="rules.php?new=0&eid=%s&oid=%s">Νέο Rule</button>',$req['eid'],$req['oid']));
 else
     PrintHeader('endpoints.php');
 

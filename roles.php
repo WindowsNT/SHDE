@@ -205,7 +205,7 @@ if (array_key_exists("rid",$req))
 }
 else
 {
-    PrintHeader('index.php','&nbsp; <button class="button is-primary is-small autobutton" href="roles.php?rid=0">Νέο Role</button> ');
+    PrintHeader('index.php','&nbsp; <button class="button is-primary block autobutton" href="roles.php?rid=0">Νέο Role</button> ');
     PrintRoles();
 }
 ?>

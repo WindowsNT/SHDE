@@ -221,7 +221,7 @@ $showcomm = 1; if (array_key_exists("shde_hide_comments",$_SESSION) && $_SESSION
             $xoid,$xeid,$xfid,$showcomm == 1 ? '<b>Σχόλια</b>' : 'Σχόλια'
         );
 
-    $buttons = ' &nbsp; <button href="shdeincoming.php" class="button autobutton is-success block">Λήψη</button> &nbsp; <button href="send.php" class="button autobutton is-link block">Αποστολή</button> &nbsp; <button href="neweggr.php" class="button autobutton is-primary  block">Νέο Έγγραφο</button> &nbsp;';
+    $buttons = ' &nbsp; <button href="shdeincoming.php" class="button autobutton is-success block">Λήψη</button> &nbsp; <button href="send.php" class="button autobutton is-link block">Αποστολή</button> &nbsp; <button href="neweggr.php" class="button autobutton is-primary  block">Νέο Έγγραφο</button>';
 
     if (!array_key_exists("q",$req))
     $src = sprintf(' &nbsp; <button href="search.php?q_oids=%s&q_eids=%s&q_fids=%s" class="block button autobutton is-warning block">Αναζήτηση</button> ',$req['oid'],$req['eid'],$req['fid']);
