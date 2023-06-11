@@ -129,9 +129,9 @@ function PrintAPIKeys()
 require_once "output.php";
 
 if (array_key_exists("uid",$req))
-    $kk = sprintf(' &nbsp; <button class="button is-primary is-small autobutton" href="apikeys.php?kid=0&uid=%s">Νέο API Key</button> ',$req['uid']);
+    $kk = sprintf(' &nbsp; <button class="button is-primary block autobutton" href="apikeys.php?kid=0&uid=%s">Νέο API Key</button> ',$req['uid']);
 else
-    $kk = sprintf('<button class="button is-primary is-small autobutton" href="apikeys.php?kid=0">Νέο API Key</button>');
+    $kk = sprintf('<button class="button is-primary block autobutton" href="apikeys.php?kid=0">Νέο API Key</button>');
 
 if (array_key_exists("kid",$req))
 {

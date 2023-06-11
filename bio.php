@@ -4,7 +4,10 @@ require_once "functions.php";
 
 if (array_key_exists("delete",$_GET) && $u)
 {
-    QQ("DELETE FROM BIO_INFO WHERE UID = ? AND ID = ?",array($u->uid,$req['delete']));
+    if ($u->superadmin)
+        QQ("DELETE FROM BIO_INFO WHERE ID = ?",array($req['delete']));
+    else
+        QQ("DELETE FROM BIO_INFO WHERE UID = ? AND ID = ?",array($u->uid,$req['delete']));
     redirect("bio.php");
     die;
 }
@@ -416,7 +419,7 @@ if ($u && $u->uid > 0)
             printf("<br><br>Λίστα όλων των βιομετρικών login<hr>");
         $cnt++;           
                 $tr = UserRow($r['UID']);
-        printf('<li>Βιομετρικό login [%s %s] [%s] &mdash; <button class="button is-small is-warning autobutton" href="bio.php?delete=%s">Διαγραφή</button></li>',$tr['LASTNAME'],$tr['FIRSTNAME'],$r['T1'],$r['ID']);
+        printf('<li>Βιομετρικό login [%s %s] [%s] &mdash; <button class="button is-small is-danger autobutton" href="bio.php?delete=%s">Διαγραφή</button></li>',$tr['LASTNAME'],$tr['FIRSTNAME'],$r['T1'],$r['ID']);
         }
     }
 }
