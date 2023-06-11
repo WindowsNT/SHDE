@@ -62,6 +62,18 @@ if (array_key_exists("function",$_POST))
     print_r($_POST);
     die;
 }
+
+if (array_key_exists("setc",$req))
+{
+    setcookie($req['setc'],"1");
+    $_COOKIE[$req['setc']] = "1";
+}
+if (array_key_exists("remc",$req))
+{
+    setcookie($req['remc'],"1",time() - 3000);
+    unset($_COOKIE[$req['remc']]);
+}
+
 require_once "output.php";
 
 

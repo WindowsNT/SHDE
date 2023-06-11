@@ -28,6 +28,7 @@ $icf = "icon.svg";
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
+
 <script src="scripts.php"></script>
 <style>
 

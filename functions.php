@@ -910,6 +910,11 @@ function NumDocsInFolder($fid,$unread = 0)
         return CountDB("DOCUMENTS WHERE FID = ?",array($fid));
 }
 
+function NumFoldersInFolder($fid)
+{
+    return CountDB("FOLDERS WHERE PARENT = ?",array($fid));
+}
+
 
 function TreeLocker($lid,$uid,$mobile)
 {
@@ -948,7 +953,8 @@ function TreeLocker($lid,$uid,$mobile)
     return $fis;
 }
 
-function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur = array(0,0,0))
+
+function Tree2($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur = array(0,0,0))
 {
     global $mobile;
     $fis = '';
@@ -1157,6 +1163,151 @@ function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur
     return $fis;
 }
 
+
+function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur = array(0,0,0))
+{
+    global $mobile;
+    if ($mobile)
+        return Tree2($uid,$ar,$oidr,$eidr,$fidr,$nest,$cur);
+    $fis = '';
+    if ($nest == 0)
+        $fis = '<aside class="menu">';
+    if ($oidr == null)
+    {
+        $q1 = QQ("SELECT * FROM ORGANIZATIONS ORDER BY NAME ASC");
+        while($r1 = $q1->fetchArray())
+        {
+            $nn = $r1['NAME'];
+            $selx = '';
+            if ($cur[1] == 0 && $cur[2] == 0 && $cur[0] == $r1['ID'])
+            {
+                $nn = '<b>'.$r1['NAME'].'</b>';
+                $selx = ' selected ';
+            }
+            $a1 = UserAccessOID($r1['ID'],$uid);
+            if ($a1 < $ar)
+                continue;
+            $fis .= sprintf('<p class="menu-label" id=""><a href="eggr.php?oid=%s">%s</a></p>',$r1['ID'],$nn);
+            $fis .= Tree($uid,$ar,$r1,null,null,$nest + 1,$cur);
+        }
+/*        if (!$mobile)
+            {
+                if ($nest == 0)
+                {
+                    // Lockers
+                    $ql = QQ("SELECT * FROM USERSINLOCKER WHERE UID = ?",array($uid));
+                    while($rl = $ql->fetchArray())
+                    {
+                        $fis .= TreeLocker($rl['LID'],$uid,$mobile);
+                    }
+                }
+                $fis .= '</ul>';
+            }
+*/            
+    }
+    else
+    {
+        if ($eidr == null)
+        {
+            $fis .= sprintf('<ul class="menu-list">');
+            $q2 = QQ("SELECT * FROM ENDPOINTS WHERE OID = ? ORDER BY NAME ASC",array($oidr['ID']));
+            while($r2 = $q2->fetchArray())
+            {
+                $nn = $r2['NAME'];
+                $selx = '';
+                if ($cur[1] == $r2['ID'] && $cur[2] == 0 && $cur[0] == $r2['OID'])
+                {
+                    $nn = '<b>'.$r2['NAME'].'</b>';
+                    $selx = ' selected ';
+                }
+                $a2 = UserAccessEP($r2['ID'],$uid);
+                if ($a2 < $ar)
+                    continue;
+
+                if(!isset($_COOKIE[sprintf("left_menu_eid_%s",$r2['ID'])]))
+                    $fis .= sprintf('<li><a class="feid%s" href="eggr.php?oid=%s&fid=0&eid=%s&setc=left_menu_eid_%s">+ %s</a>',$r2['ID'],$r2['OID'],$r2['ID'],$r2['ID'],$nn);
+                else
+                {
+                    $fis .= sprintf('<li><a class="feid%s" href="eggr.php?oid=%s&fid=0&eid=%s&remc=left_menu_eid_%s">- %s</a>',$r2['ID'],$r2['OID'],$r2['ID'],$r2['ID'],$nn);
+                    $fis .= Tree($uid,$ar,$oidr,$r2,null,$nest + 1,$cur);
+                }
+
+                $fis .= '</li>';
+
+            }
+        }
+        else
+        {
+                $par5 = 0;
+                if ($fidr == null)
+                    $q3 = QQ("SELECT * FROM FOLDERS WHERE EID = ? AND (PARENT = 0 OR PARENT IS NULL) ORDER BY NAME ASC",array($eidr['ID']));
+                else
+                    {
+                        $par5 = 1;
+                        $q3 = QQ("SELECT * FROM FOLDERS WHERE EID = ? AND PARENT = ? ORDER BY NAME ASC",array($eidr['ID'],$fidr['ID']));
+                    }
+                $fis .= '<ul>';
+                while($r3 = $q3->fetchArray())
+                {
+                    $nn = $r3['NAME'];
+                    $selx = '';
+                    if ($cur[2] == $r3['ID'])
+                    {
+                        $nn = '<b>'.$r3['NAME'].'</b>';
+                        $selx = ' selected ';
+                    }
+                    else
+                    {
+                        $qUnread = CountDB("DOCUMENTS WHERE FID = ? AND READSTATE = 1",array($r3['ID']));
+                        if ($qUnread)
+                            $nn = '<b>'.$r3['NAME'].'</b>';
+                    }
+                    $a3 = UserAccessFolder($r3['ID'],$uid);
+                    if ($a3 < $ar)
+                        continue;
+                    
+                    $nd = NumDocsInFolder($r3['ID']);
+                    if ($nd > 0)
+                        $nn .= sprintf(' (%s) ',$nd);
+
+                    if ($fidr)
+                        {
+                            $ne = $nest - 2;
+                            $jx = '';
+                            while($ne > 0)
+                                {
+                                    $jx .= '&nbsp;';
+                                    $ne--;
+                                }
+                                $nn = $jx.$nn;
+                        }
+
+                    $subf = NumFoldersInFolder($r3['ID']);
+
+                    if ($subf == 0)
+                    {
+                        $fis .= sprintf('<li><a href="eggr.php?oid=%s&eid=%s&fid=%s">%s<font color="red">%s</font></a>',$oidr['ID'],$eidr['ID'],$r3['ID'],$nn,ClassificationString2($r3['CLASSIFIED']));
+                    }
+                    else
+                    if(!isset($_COOKIE[sprintf("left_menu_fid_%s",$r3['ID'])]))
+                        $fis .= sprintf('<li><a href="eggr.php?oid=%s&eid=%s&fid=%s&setc=left_menu_fid_%s">+ %s<font color="red">%s</font></a>',$oidr['ID'],$eidr['ID'],$r3['ID'],$r3['ID'],$nn,ClassificationString2($r3['CLASSIFIED']));
+                    else
+                    {
+                        $fis .= sprintf('<li><a href="eggr.php?oid=%s&eid=%s&fid=%s&remc=left_menu_fid_%s">- %s<font color="red">%s</font></a>',$oidr['ID'],$eidr['ID'],$r3['ID'],$r3['ID'],$nn,ClassificationString2($r3['CLASSIFIED']));
+                        $fis .= Tree($uid,$ar,$oidr,$eidr,$r3,$nest + 1,$cur);
+                    }
+                    $fis .= '</li>';
+					
+                }
+                $fis .= '</ul>';
+            
+        }
+
+    }
+      if ($nest == 0)
+            $fis .= '</aside>';
+      return $fis;
+}
 
 
 
