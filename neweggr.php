@@ -147,7 +147,7 @@ if (array_key_exists("c",$_POST))
     PushMany($notified,sprintf("Επεξεργασία εγγράφου [%s].",$_POST['topic']));         
     $whereret = sprintf("eggr.php?oid=%s&eid=%s&fid=%s",$_POST['oid'],$_POST['eid'],$fid);   
 
-//    redirect($whereret);
+    redirect($whereret);
     die;
 }
 
