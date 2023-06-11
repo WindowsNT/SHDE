@@ -82,7 +82,7 @@ if (array_key_exists("c",$_POST))
         {
             $fid = QQ("SELECT * FROM FOLDERS WHERE SPECIALID = ? AND EID = ?",array(FOLDER_OUTBOX,$_POST['eid']))->fetchArray()['ID'];
             $clsid = guidv4();
-            QQ("INSERT INTO DOCUMENTS (ENTRYCREATED,UID,EID,TOPIC,FID,CLASSIFIED,PRIORITY,TYPE,CATEGORY,ORIGINALITY,FORMATTING,DUEDATE,CLSID,COLOR,ADDEDSIGNERS,PDFPASSWORD,SIGNERTITLES,ORIGINALITYEXTRA) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array(
+            QQ("INSERT INTO DOCUMENTS (ENTRYCREATED,UID,EID,TOPIC,FID,CLASSIFIED,PRIORITY,TYPE,CATEGORY,ORIGINALITY,FORMATTING,DUEDATE,CLSID,COLOR,ADDEDSIGNERS,PDFPASSWORD,SIGNERTITLES,ORIGINALITYEXTRA) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array(
                 time(),
                 $u->uid,
                 $_POST['eid'],
@@ -147,7 +147,7 @@ if (array_key_exists("c",$_POST))
     PushMany($notified,sprintf("Επεξεργασία εγγράφου [%s].",$_POST['topic']));         
     $whereret = sprintf("eggr.php?oid=%s&eid=%s&fid=%s",$_POST['oid'],$_POST['eid'],$fid);   
 
-    redirect($whereret);
+//    redirect($whereret);
     die;
 }
 
