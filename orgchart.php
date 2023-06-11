@@ -194,7 +194,7 @@ if (array_key_exists("reload",$req) && $u->superadmin)
         LoadAll();
         LoadAll2(0,$allmap2);
         $s = serialize($allmap2);
-        QQ("DELETE FROM ORGCHARTCACHE WHERE MODE = 0");
+        QQ("DELETE FROM ORGCHARTCACHE WHERE MODE = 1");
         QQ("INSERT INTO ORGCHARTCACHE (MODE,DATA) VALUES(?,?)",array(1,$s));
     
 
@@ -331,8 +331,11 @@ else
     echo OrgTree3(0);
 */
 
+$actives = 0;
+$subactives = 0;
 function OrgTree5(array& $top)
 {
+    global $actives,$subactives;
     global $req;
     echo '<style>
     li {
@@ -350,6 +353,9 @@ function OrgTree5(array& $top)
     echo sprintf('<ul>');
     foreach($top as $r1)
     {
+        if ($r1['ACTIVE'] == 1 && $r1['SDDD'] == 1)
+            $actives++;
+
         $n = $r1['NAME'];
         if ($r1['ACTIVE'] == 1)
             $n = sprintf('<b>%s</b>',$r1['NAME']);
@@ -369,3 +375,4 @@ function OrgTree5(array& $top)
 
 $chart = LoadChart();
 OrgTree5($chart);
+printf("Ενεργοί οργανισμοί: %d",$actives);
