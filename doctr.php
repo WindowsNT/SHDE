@@ -189,49 +189,56 @@ function DocTR($did,$a,$full = 0,$putoid = 1,$puteid = 1,$putfid = 1)
     $jrecp = ReceipientArrayText($did);
     $s .= sprintf("<td>");
 
+
     if ($inc == 0 && $sent == 0 && $a == 2)
         $s .= sprintf('<button class="autobutton is-smaller button is-link" href="recp.php?did=%s">Επιλογή</button><hr>',$r1['ID']);
     if (count($jrecp))
     {
         $cnt = 1;
+        $s .= '<div class="table-container"  style="max-height: 300px;  overflow: auto;"><table class="table table is-fullwidth"><thead><tr><th>#</th><th>Προς</th></thead><tbody>';
         foreach($jrecp as $r66)
         {
-            $s .= sprintf("<b>%s.</b> %s<br>",$cnt++,$r66);
+            $s .= sprintf("<tr><td><b>%s</b></td><td>%s</td>",$cnt++,$r66);
         }
+        $s .= '</table></div>';
     }
 
     $jkoin = KoinArrayText($did);
+
     if (count($jkoin))
     {
-        $s .= '<hr>';
         $cnt = 1;
+        $s .= '<div class="table-container"  style="max-height: 300px;  overflow: auto;"><table class="table table is-fullwidth"><thead><tr><th>#</th><th>Κοινοποίηση</th></thead><tbody>';
         foreach($jkoin as $r66)
         {
-            $s .= sprintf("<b>%s.</b> %s<br>",$cnt++,$r66);
+            $s .= sprintf("<tr><td><b>%s</b></td><td>%s</td>",$cnt++,$r66);
         }
+        $s .= '</table></div>';
     }
 
     
     $jkoin2 = BCCArrayText($did);
     if (count($jkoin2))
     {
-        $s .= '<hr>';
         $cnt = 1;
+        $s .= '<div class="table-container"  style="max-height: 300px;  overflow: auto;"><table class="table table is-fullwidth"><thead><tr><th>#</th><th>Κρ. Κοινοποίηση</th></thead><tbody>';
         foreach($jkoin2 as $r66)
         {
-            $s .= sprintf("<b>%s.</b> %s<br>",$cnt++,$r66);
+            $s .= sprintf("<tr><td><b>%s</b></td><td>%s</td>",$cnt++,$r66);
         }
+        $s .= '</table></div>';
     }
 
     $jkoin3 = EswArrayText($did);
     if (count($jkoin3))
     {
-        $s .= '<hr>';
         $cnt = 1;
+        $s .= '<div class="table-container"  style="max-height: 300px;  overflow: auto;"><table class="table table is-fullwidth"><thead><tr><th>#</th><th>Εσ. Διανομή</th></thead><tbody>';
         foreach($jkoin3 as $r66)
         {
-            $s .= sprintf("<b>%s.</b> %s<br>",$cnt++,$r66);
+            $s .= sprintf("<tr><td><b>%s</b></td><td>%s</td>",$cnt++,$r66);
         }
+        $s .= '</table></div>';
     }
 
     if ($inc == 0)

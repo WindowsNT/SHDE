@@ -107,7 +107,7 @@ if (array_key_exists("new",$req))
 }
 else
     {
-        $bp = sprintf('&nbsp; <button class="button autobutton is-primary is-small" href="att.php?mid=%s&did=%s&new=1">Προσθήκη</button> ',$msg['ID'],$doc['ID']);
+        $bp = sprintf('&nbsp; <button class="button autobutton is-primary block" href="att.php?mid=%s&did=%s&new=1">Προσθήκη</button> ',$msg['ID'],$doc['ID']);
         PrintHeader($whereret,$bp);
         $q1 = QQ("SELECT * FROM ATTACHMENTS WHERE MID = ?",array($msg['ID']));
         ?>

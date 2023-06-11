@@ -458,6 +458,7 @@ function BCCArrayText($did)
     $doc = Drow($did,1);
     if (!$doc)
         return array();
+
     $inc = IsIncoming($doc);
     $rr = array();
     if ($doc['BCCX'] && strlen($doc['BCCX']))
@@ -465,12 +466,15 @@ function BCCArrayText($did)
         foreach(unserialize($doc['BCCX']) as $y)
         {
             $ar = OrgChartFullName($y,0,2);
+            if (!$ar)
+                continue;
             if ($inc)
                 $rr[] = sprintf('<a href="neweggr.php?reply=%s&ks=%s">%s</a>',$did,$y,$ar);
             else
                 $rr[] = $ar;
         }
     }
+
     if ($doc['BCCY'] && strlen($doc['BCCY']))
     {
         foreach(unserialize($doc['BCCY']) as $y)
@@ -504,6 +508,8 @@ function EswArrayText($did)
         foreach(unserialize($doc['ESWX']) as $y)
         {
             $ar = OrgChartFullName($y,0,2);
+            if (!$ar)
+                continue;
             if ($inc)
                 $rr[] = sprintf('<a href="neweggr.php?reply=%s&ks=%s">%s</a>',$did,$y,$ar);
             else
@@ -916,7 +922,7 @@ function NumFoldersInFolder($fid)
 }
 
 
-function TreeLocker($lid,$uid,$mobile)
+function TreeLocker($lid,$uid,$mobile,$ver2 = 0)
 {
     $lr = LockerRow($lid);
     $fis = '';
@@ -924,10 +930,20 @@ function TreeLocker($lid,$uid,$mobile)
     if ($lr == null)
         return $fis;
     if (!$mobile)
-        $fis .= sprintf('<li style="margin-left:2px; padding-left: 0px;" class="feid" id="feidl%s" ><span class="treecaret"></span><a href="#">%s</a>',$lid,$lr['NAME']);
-    if (!$mobile)
-        $fis .= '<ul class="treenested">';
+        {
+            if ($ver2 == 2)
+            {
+                $fis .= sprintf('<p class="menu-label" id=""><a href="#">%s</a></p>',$lr['NAME']);
+            }
+            else
+            {
+                $fis .= sprintf('<li style="margin-left:2px; padding-left: 0px;" class="feid" id="feidl%s" ><span class="treecaret"></span><a href="#">%s</a>',$lid,$lr['NAME']);
+                $fis .= '<ul class="treenested">';
+            }
+        }
     $q1 = QQ("SELECT * FROM FOLDERS WHERE LID = ? ORDER BY NAME ASC",array($lid));
+    if ($ver2 == 2)
+        $fis .= sprintf('<ul class="menu-list">');
     while($r1 = $q1->fetchArray())
     {
         if ($mobile)
@@ -936,9 +952,14 @@ function TreeLocker($lid,$uid,$mobile)
         }
         else
         {
-            $fis .= sprintf('<li  style="margin-left:2px; padding-left: 0px;" class="feid" id="feid%s"><span class=""></span><a href="eggr.php?fid=%s">%s</a></span></li>',$r1['ID'],$r1['ID'],$r1['NAME']);
+            if ($ver2 == 2)
+                $fis .= sprintf('<li class="feid" id="feid%s"><span class=""><a href="eggr.php?fid=%s">%s</a></li>',$r1['ID'],$r1['ID'],$r1['NAME']);
+            else
+                $fis .= sprintf('<li  style="margin-left:2px; padding-left: 0px;" class="feid" id="feid%s"><span class=""></span><a href="eggr.php?fid=%s">%s</a></span></li>',$r1['ID'],$r1['ID'],$r1['NAME']);
         }        
     }
+    if ($ver2 == 2)
+        $fis .= '</ul>';
 
     if (!$mobile)
         $fis .= '</ul>';
@@ -1190,20 +1211,6 @@ function Tree($uid,$ar = 0,$oidr = null,$eidr = null,$fidr = null,$nest = 0,$cur
             $fis .= sprintf('<p class="menu-label" id=""><a href="eggr.php?oid=%s">%s</a></p>',$r1['ID'],$nn);
             $fis .= Tree($uid,$ar,$r1,null,null,$nest + 1,$cur);
         }
-/*        if (!$mobile)
-            {
-                if ($nest == 0)
-                {
-                    // Lockers
-                    $ql = QQ("SELECT * FROM USERSINLOCKER WHERE UID = ?",array($uid));
-                    while($rl = $ql->fetchArray())
-                    {
-                        $fis .= TreeLocker($rl['LID'],$uid,$mobile);
-                    }
-                }
-                $fis .= '</ul>';
-            }
-*/            
     }
     else
     {

@@ -33,6 +33,7 @@ if (!array_key_exists("uid",$req))
     
     function CreateOrEditAPIKey($kid,$uid)
     {
+        global $req;
         if ($uid)
         {
             QQ("INSERT INTO APIKEYS (UID,T1) VALUES (?,?)",array($uid,guidv4()));
