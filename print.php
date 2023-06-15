@@ -1,6 +1,9 @@
 <?php
 
 require_once "functions.php";
+require_once "printit.php";
+require_once "pdfstuff.php";
+
 if (array_key_exists("clsid",$req))
 {
     $doc2 = QQ("SELECT * FROM DOCUMENTS WHERE CLSID = ?",array($req['clsid']))->fetchArray();
@@ -17,6 +20,32 @@ else
         diez(); 
 }
 
+if (array_key_exists("zip",$req))
+{
+    $zipf = tempnam(sys_get_temp_dir(),"pdff");
+    $zip= new ZipArchive;
+    if ($zip->open($zipf, ZipArchive::CREATE)!==TRUE) {
+        exit("cannot open <$filename>\n");
+    }
+    foreach(explode(",",$req['docs']) as $doc)
+    {
+        $doc2 = QQ("SELECT * FROM DOCUMENTS WHERE ID = ?",array($doc))->fetchArray();
+        if ($doc2)
+        {
+            $msg2 = QQ("SELECT * FROM MESSAGES WHERE DID = ? ORDER BY DATE DESC",array($doc2['ID']))->fetchArray();
+            $mid =  $msg2['ID'];
+        }
+        $e = PrintAll($doc,$mid);
+        $eidr = EPRow($doc2['EID']);
+        $e2 = PDFConvert($eidr['NAME'],$doc2['TOPIC'],$e,$doc2['CLSID'],$msg2['DATE'],$doc2['PDFPASSWORD'] ? $doc2['PDFPASSWORD'] : '');
+        $zip->addFromString($doc.".pdf",$e2);
+    }
+    $zip->close();
+    header("Content-type: application/zip");
+    readfile($zipf);
+    die;
+}
+
 $msg = MRow($req['mid'],1);
 if (!$msg)
     diez();
@@ -25,7 +54,7 @@ $doc = DRow($msg['DID'],1);
 if (!$doc)
     diez();
 
-if (array_key_exists("pdf",$req) || $doc['TYPE'] == 2)
+if (array_key_exists("pdf",$req) || array_key_exists("zip",$req) || $doc['TYPE'] == 2)
 {
 }
 else
@@ -87,8 +116,6 @@ if ($u && UserAccessMessage($req['mid'],$u->uid) == 0)
 
 
 
-require_once "printit.php";
-require_once "pdfstuff.php";
 
 
 $s = PrintAll($doc['ID'],$msg['ID']);
