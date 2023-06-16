@@ -14,7 +14,7 @@ function DocTR($did,$a,$full = 0,$putoid = 1,$puteid = 1,$putfid = 1)
     $showsx = 1; if (array_key_exists("shde_hide_sxetika",$_SESSION) && $_SESSION['shde_hide_sxetika'] == 1) $showsx = 0;
     $showatt = 1; if (array_key_exists("shde_hide_att",$_SESSION) && $_SESSION['shde_hide_att'] == 1) $showatt = 0;
     $showcomm = 1; if (array_key_exists("shde_hide_comments",$_SESSION) && $_SESSION['shde_hide_comments'] == 1) $showcomm = 0;
-    
+
     if (is_array($did))
     {
         $r1 = $did;
@@ -367,11 +367,11 @@ function DocTR($did,$a,$full = 0,$putoid = 1,$puteid = 1,$putfid = 1)
 
             $s2 .= '<br>';
             $s2 .= sprintf(' <a href="neweggr.php?did=%s&mid=%s">Επεξεργασία</a>',$r1['ID'],$lastmid);
-            if (!$showcomm)
+            if ($showcomm)
                $s2 .= sprintf('&#x2022; <a href="comments.php?did=%s&mid=%s">Σχόλια</a>',$r1['ID'],$lastmid);
-            if (!$showsx)
+            if ($showsx)
                 $s2 .= sprintf('&#x2022; <a href="related.php?did=%s&mid=%s">Σχετικά</a>',$r1['ID'],$lastmid);
-            if (!$showatt)
+            if ($showatt)
                 $s2 .= sprintf('&#x2022; <a href="att.php?did=%s&mid=%s">Επισυναπτόμενα</a>',$r1['ID'],$lastmid);
 
             $cs = CanSign($r1['ID'],$u->uid);
