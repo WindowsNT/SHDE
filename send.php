@@ -434,13 +434,13 @@ if (array_key_exists("send",$_POST))
                     if ($dr['CLASSIFIED'] > 0)
                     {
                         $mail->addAttachment($f1,ed($r5['NAME'],$pwd,'d'));
-                        $message .= sprintf('<br>Συνημμένο: <b>%s</b> [%s] <br>',ed($r5['NAME'],$pwd,'d'),ed($r5['DESC'],$pwd,'d'));
+                        $message .= sprintf('<br>Συνημμένο: <b>%s</b> [%s] <br>',ed($r5['NAME'],$pwd,'d'),ed($r5['DESCRIPTION'],$pwd,'d'));
 
                     }
                     else
                     {
                         $mail->addAttachment($f1,$r5['NAME']);
-                        $message .= sprintf('<br>Συνημμένο: <b>%s</b> [%s] <br>',$r5['NAME'],$r5['DESC']);
+                        $message .= sprintf('<br>Συνημμένο: <b>%s</b> [%s] <br>',$r5['NAME'],$r5['DESCRIPTION']);
                     }
                 }
         

@@ -15,6 +15,8 @@ function DocTR($did,$a,$full = 0,$putoid = 1,$puteid = 1,$putfid = 1)
     $showatt = 1; if (array_key_exists("shde_hide_att",$_SESSION) && $_SESSION['shde_hide_att'] == 1) $showatt = 0;
     $showcomm = 1; if (array_key_exists("shde_hide_comments",$_SESSION) && $_SESSION['shde_hide_comments'] == 1) $showcomm = 0;
 
+$showatt = 1;
+
     if (is_array($did))
     {
         $r1 = $did;

@@ -188,6 +188,7 @@ $showsx = 1; if (array_key_exists("shde_hide_sxetika",$_SESSION) && $_SESSION['s
 $showatt = 1; if (array_key_exists("shde_hide_att",$_SESSION) && $_SESSION['shde_hide_att'] == 1) $showatt = 0;
 $showcomm = 1; if (array_key_exists("shde_hide_comments",$_SESSION) && $_SESSION['shde_hide_comments'] == 1) $showcomm = 0;
 
+$showatt = 1;
 
     $xoid = 0;$xeid = 0;$xfid = 0;
     if (array_key_exists("oid",$req)) $xoid = $req['oid'];
@@ -808,6 +809,8 @@ function PrintMyDocuments($uid,$fid = 0,$eid = 0,$oid = 0,$full = 0,$did = 0)
     $showatt = 1; if (array_key_exists("shde_hide_att",$_SESSION) && $_SESSION['shde_hide_att'] == 1) $showatt = 0;
     $showcomm = 1; if (array_key_exists("shde_hide_comments",$_SESSION) && $_SESSION['shde_hide_comments'] == 1) $showcomm = 0;
         
+    $showatt = 1;
+
     $s .= sprintf('
     <hr>
     <table class="table datatable">
