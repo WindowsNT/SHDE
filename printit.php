@@ -34,7 +34,12 @@ function PrintLogotypo($eid,$did,$mid)
     $s .= sprintf("<br>%s<br>%s %s<br><b>email: %s</b>",$ep['A1'],$ep['A2'],$ep['A3'],$ep['EMAIL']);
 
 
-    if ($msg['INFO'] && strlen($msg['INFO']))
+    if ($msg['INFO'] && strlen($msg['INFO']) == 1)
+    {
+
+    }
+    else
+    if ($msg['INFO'] && strlen($msg['INFO']) > 1)
         $s .= sprintf("<br>Πληροφορίες: %s",$msg['INFO']);
     else
         $s .= sprintf("<br>Πληροφορίες: %s %s",$issuer ? $issuer['LASTNAME'] : '',$issuer ? $issuer['FIRSTNAME'] : '');
@@ -95,7 +100,7 @@ function PrintRight($eid,$did,$mid)
 
     // Receipients 
     $rr = ReceipientArrayText($did);
-    if (count($rr))
+    if (count($rr) && $fmt['form_recp'] == 0)
     {
         $cnx = 1;
         $s .= '<br><br><br>ΠΡΟΣ:<br>';

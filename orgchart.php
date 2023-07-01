@@ -166,10 +166,10 @@ function ReceiveOrgLive()
     curl_setopt($c, CURLOPT_REFERER, $siteroot);
     $r = curl_exec($c);
     $j = json_decode($r);
-//    printdie($j);
+//    print_r($j);
     QQ("DELETE FROM ORGCHART");
-    QQ("BEGIN TRANSACTION;");
-    QQ("UPDATE ORGCHART SET ACTIVE = 0");
+    QQ("BEGIN TRANSACTION");
+    QQ("UPDATE ORGCHART SET ACTIVE = 0"); 
     foreach($j->RootNode->ChildNodes as $ch)
         AddDep($ch,0,0,0);
     QQ("COMMIT");
