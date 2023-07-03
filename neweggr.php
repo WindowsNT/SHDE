@@ -33,6 +33,9 @@ NOT_Scripts();
 
 if (array_key_exists("c",$_POST))
 {
+    // replace 
+    $_POST['msg'] = str_replace('<span style="font-size: 1rem; font-weight: 400;">','<span>',$_POST['msg']);
+    $req['msg'] = $_POST['msg'];
     $ur = UserRow($u->uid);
     $_POST['formatting'] = serialize(array("form_recp" => $_POST['form_recp']));
     if (!array_key_exists("classification",$_POST))
@@ -387,6 +390,27 @@ else
 <br><br>
 <button class="button is-primary">Υποβολή</button>
 </form>
+<pre id="PreSave"></pre>
+<script>
+    $(document).ready(function()
+    {
+        if (typeof(Storage) !== "undefined") 
+            {
+                var eee = "msg" + <?= $req['mid'] ?>;
+                var t = localStorage.getItem(eee);
+                $("#PreSave").html(t);
+            }        
+        setInterval(() => {
+            if (typeof(Storage) !== "undefined") 
+            {
+                var eee = "msg" + <?= $req['mid'] ?>;
+                var t = $('#msg').html();
+                localStorage.setItem(eee, t);
+            }
+
+        }, 15000);
+    });
+</script>
 <?php
 
     if (array_key_exists("did",$req) && array_key_exists("mid",$req))
