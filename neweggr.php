@@ -396,15 +396,15 @@ else
     {
         if (typeof(Storage) !== "undefined") 
             {
-                var eee = "msg" + <?= $req['mid'] ?>;
+                var eee = "msg" + <?= array_key_exists("mid",$req) ? $req['mid']  : '0' ?>;
                 var t = localStorage.getItem(eee);
                 $("#PreSave").html(t);
             }        
         setInterval(() => {
             if (typeof(Storage) !== "undefined") 
             {
-                var eee = "msg" + <?= $req['mid'] ?>;
-                var t = $('#msg').html();
+                var eee = "msg" + <?= array_key_exists("mid",$req) ? $req['mid']  : '0' ?>;
+                var t = $('#msg').val();
                 localStorage.setItem(eee, t);
             }
 
