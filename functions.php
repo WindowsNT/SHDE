@@ -541,17 +541,16 @@ function PickFolder($eid,$name = "parent",$sel = array(0),$uid = 0,$m = 0,$oid =
         if ($uid && UserAccessFolder($r2['ID'],$uid) == 0)
             continue;
 
-        if ($eid)
-        {
-            $pare = EPRow($r2['EID']);
-            if (!$pare)
-                continue;
-            if ($pare['OID'] != $oid && $oid != 0)
-                continue;
-            $or = FRow($pare['OID']);
-            if (!$or)
-                continue;
-        }
+        $pare = EPRow($r2['EID']);
+        if (!$pare)
+            continue;
+        if ($eid && $pare['ID'] != $eid)
+            continue;
+        if ($pare['OID'] != $oid && $oid != 0)
+            continue;
+        $or = FRow($pare['OID']);
+        if (!$or)
+            continue;
 
         $n = $r2['NAME'];
         if ($lid)
