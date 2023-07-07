@@ -227,6 +227,10 @@ function UserAccessFolder($fid,$uid)
         return 0;
 
     $max =  UserAccessEP($r['EID'],$uid);
+    // If this is thyrida
+    $thi = TopFolderType($fid);
+    if ($thi == FOLDER_LOCKERS && $r['SPECIALID'] != FOLDER_LOCKERS)
+        $max = 0;
 
     // Check special
     $x = QQ("SELECT * FROM USERSINFOLDER WHERE FID = ? AND UID = ?",array($fid,$uid))->fetchArray();
