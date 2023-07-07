@@ -46,19 +46,33 @@ if (array_key_exists("c",$_POST))
     if ($ur['CLASSIFIED'] < $_POST['classification'])
         $_POST['classification'] = 0;
 
+    $what = 0;
     $r = QQ("SELECT * FROM FOLDERS WHERE ID = ?",array($_POST['c']))->fetchArray();
     if (!$r)
     {
         // Create
         QQ("INSERT INTO FOLDERS (EID,LID,NAME,PARENT,SPECIALID,CLASSIFIED) VALUES (?,?,?,?,?,?)",array($_POST['eid'],$_POST['lid'],$_POST['name'],$_POST['parent'],0,$_POST['classification']));
+        $what = $lastRowID;
     }
     else
     {
         // Edit
+        $what = $_POST['c'];
         if ($_POST['parent'] == $_POST['c'])
             $_POST['parent'] = 0;
         QQ("UPDATE FOLDERS SET EID = ?,LID = ?, NAME = ?, PARENT = ?, CLASSIFIED = ? WHERE ID = ? AND SPECIALID = 0",array($_POST['eid'],$_POST['lid'],$_POST['name'],$_POST['parent'],$_POST['classification'],$_POST['c']));
     }
+
+    QQ("DELETE FROM USERSINFOLDER WHERE FID = ?",array($what));
+    foreach($req['readuid'] as $wr)
+    {
+        QQ("INSERT INTO USERSINFOLDER (UID,FID,ACCESS) VALUES (?,?,?)",array($wr,$what,1));        
+    }
+    foreach($req['writeuid'] as $wr)
+    {
+        QQ("INSERT INTO USERSINFOLDER (UID,FID,ACCESS) VALUES (?,?,?)",array($wr,$what,2));        
+    }
+
     redirect(sprintf("folders.php?eid=%s&lid=%s",$eid,$lid));
     die;
 }
@@ -86,6 +100,26 @@ function CreateOrEditFolder($fid)
     <?= PickFolder($eid,"parent",array($r['PARENT']),0,0,0,0,$lid) ?>
 
     <br><br>
+    Επιπλέον άτομα με Read Access: <br>
+    <?php
+    $ar1 = array();
+    $qj1 = QQ("SELECT * FROM USERSINFOLDER WHERE FID = ? AND ACCESS = 1",array($fid));
+    while($rj1 = $qj1->fetchArray())
+        $ar1[] = $rj1['UID'];
+    echo  PickUser("readuid[]",$ar1,1,array($eid)); 
+    ?>
+
+    <br>
+    Επιπλέον άτομα με Write Access: <br>
+    <?php
+    $ar2 = array();
+    $qj2 = QQ("SELECT * FROM USERSINFOLDER WHERE FID = ? AND ACCESS = 2",array($fid));
+    while($rj2 = $qj2->fetchArray())
+        $ar2[] = $rj2['UID'];
+    echo  PickUser("writeuid[]",$ar2,1,array($eid)); 
+    ?>
+
+    <br>
     Διαβάθμιση: <br>
         <?php
         echo PickClassification("classification",array($r['CLASSIFIED']));

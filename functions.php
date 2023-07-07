@@ -38,6 +38,7 @@ define('FOLDER_OUTBOX',2);
 define('FOLDER_SENT',3);
 define('FOLDER_TRASH',4);
 define('FOLDER_ARCHIVE',5);
+define('FOLDER_LOCKERS',6);
 
 
 function NestX($char,$nest)
@@ -708,7 +709,7 @@ function PickUser($name = "uid",$sel = array(),$m = 0,$foreis = array(),$andall 
                     $found = 1;
                     break;
                 }
-                $q9 = QQ("SELECT * FROM ROLES WHERE OID = ? AND UID = ?",array($fid,$r['ID']))->fetchArray();
+                $q9 = QQ("SELECT * FROM ROLES WHERE EID = ? AND UID = ?",array($fid,$r['ID']))->fetchArray();
                 if ($q9 && ($uid == 0 || UserAccessOID($fid,$uid)))
                 {
                     $found = 1;

@@ -155,27 +155,6 @@ function UserAccessEP($eip,$uid,$nooid = 0)
     return $l;
 }
 
-function UserAccessLocker($lid,$uid)
-{
-    $q1 = QQ("SELECT * FROM LOCKERS WHERE ID = ?",array($lid))->fetchArray();
-    if (!$q1)  
-        return 0;
-
-    $a0 = 0;
-    $a1 = 0;
-    $a2 = 0;
-    $q2 = QQ("SELECT * FROM USERSINLOCKER WHERE LID = ? AND UID = ?",array($lid,$uid))->fetchArray();
-    if ($q2)
-        $a0 = 1;
-
-    if ($q1['EID'])
-        $a1 = UserAccessEP($q1['EID'],$uid);
-    if ($q1['OID'])
-        $a2 = UserAccessOID($q1['EID'],$uid);
-
-    return max(array($a0,$a1,$a2));
-}
-
 
 
 function UserAccessDocument($did,$uid)
@@ -247,8 +226,6 @@ function UserAccessFolder($fid,$uid)
     if ($ur['CLASSIFIED'] < $r['CLASSIFIED'])
         return 0;
 
-    if ($r['LID'])
-        return UserAccessLocker($r['LID'],$uid);
     return UserAccessEP($r['EID'],$uid);
 }
 

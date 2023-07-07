@@ -24,14 +24,13 @@ if (!$u)
         echo '<div class="content" style="margin:20px;">';
         echo 'Διαγραφή Endpoint';
     
-        $lcount = CountDB("LOCKERS WHERE EID = ?",array($req['delete']));
         $fcount = CountDB("FOLDERS WHERE EID = ?",array($req['delete']));
         $docccount = CountDB("DOCUMENTS WHERE EID = ?",array($req['delete']));
         $abcount = CountDB("ADDRESSBOOK WHERE EID = ?",array($req['delete']));
         $rcount = CountDB("ROLES WHERE EID = ?",array($req['delete']));
 
         if ($fcount || $docccount || $abcount || $rcount) 
-            printf("<br><b>Η διαγραφή του endpoint θα διαγράψει οριστικά και %s φακέλους με συνολικά %s έγγραφα που βρίσκονται σε αυτό, καθώς και %s εγγραφές στο βιβλίο διευθύνσεων και %s ρόλους προσωπικού και %s θυρίδες!</b>",$fcount,$docccount,$abcount,$rcount,$lcount);
+            printf("<br><b>Η διαγραφή του endpoint θα διαγράψει οριστικά και %s φακέλους με συνολικά %s έγγραφα που βρίσκονται σε αυτό, καθώς και %s εγγραφές στο βιβλίο διευθύνσεων και %s ρόλους προσωπικού!</b>",$fcount,$docccount,$abcount,$rcount);
     
         printf('<br><br><button href="endpoints.php?delete=%s&force=1" class="button autobutton is-danger">Επιβεβαίωση Διαγραφής</button><br>',$req['delete']);
         printf('<br><hr><button href="endpoints.php" class="button autobutton is-success">Πίσω</button>');
@@ -248,8 +247,8 @@ function PrintEndpoints($oid)
         printf('<td>%s<br>%s<br>%s</td>',$r['TEL1'],$r['TEL2'],$r['TEL3']);
         printf('<td>');
         if ($a == 2)
-            printf('<a href="endpoints.php?eid=%s">Επεξεργασία</a> &mdash; <a href="folders.php?eid=%s">Φάκελοι</a> &mdash; <a href="lockers.php?eid=%s">Θυρίδες (%s)</a> &mdash; <a href="rules.php?eid=%s">Κανόνες</a> &mdash; <a href="restrictions.php?eid=%s">Περιορισμοί</a>',
-            $r['ID'],$r['ID'],$r['ID'],CountDB("LOCKERS WHERE EID = ?",array($r['ID'])),$r['ID'],$r['ID']);
+            printf('<a href="endpoints.php?eid=%s">Επεξεργασία</a> &mdash; <a href="folders.php?eid=%s">Φάκελοι</a> &mdash; <a href="rules.php?eid=%s">Κανόνες</a> &mdash; <a href="restrictions.php?eid=%s">Περιορισμοί</a>',
+            $r['ID'],$r['ID'],$r['ID'],$r['ID']);
         if ($a == 2)
             printf(' &mdash; <a href="endpoints.php?delete=%s"><font color="red">Διαγραφή</font></a>',$r['ID']);
         printf('</td>');
