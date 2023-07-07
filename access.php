@@ -226,7 +226,17 @@ function UserAccessFolder($fid,$uid)
     if ($ur['CLASSIFIED'] < $r['CLASSIFIED'])
         return 0;
 
-    return UserAccessEP($r['EID'],$uid);
+    $max =  UserAccessEP($r['EID'],$uid);
+
+    // Check special
+    $x = QQ("SELECT * FROM USERSINFOLDER WHERE FID = ? AND UID = ?",array($fid,$uid))->fetchArray();
+    if ($x)
+    {
+        if ($x['ACCESS'] > $max)
+            $max = $x['ACCESS'];
+    }
+
+    return $max;
 }
 
 
