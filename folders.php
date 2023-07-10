@@ -106,7 +106,7 @@ function CreateOrEditFolder($fid)
     $qj1 = QQ("SELECT * FROM USERSINFOLDER WHERE FID = ? AND ACCESS = 1",array($fid));
     while($rj1 = $qj1->fetchArray())
         $ar1[] = $rj1['UID'];
-    echo  PickUser("readuid[]",$ar1,1,array($eid)); 
+    echo  PickUser("readuid[]",$ar1,1,array()); 
     ?>
 
     <br>
@@ -116,7 +116,7 @@ function CreateOrEditFolder($fid)
     $qj2 = QQ("SELECT * FROM USERSINFOLDER WHERE FID = ? AND ACCESS = 2",array($fid));
     while($rj2 = $qj2->fetchArray())
         $ar2[] = $rj2['UID'];
-    echo  PickUser("writeuid[]",$ar2,1,array($eid)); 
+    echo  PickUser("writeuid[]",$ar2,1,array()); 
     ?>
 
     <br>
