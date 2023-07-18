@@ -1983,6 +1983,19 @@ function BuildSadesRequest($did)
         SortArrayProist($sigs);
     }
     
+    if ($r1['ORIGINALITY'] == 1)
+    {
+        $role2 = QQ("SELECT * FROM ROLES WHERE ROLEID = ? AND EID = ?",array(ROLE_EPADMIN,$eid));
+        while ($r4 = $role2->fetchArray())
+            $sigs[] = $r4['ID'];
+        $er = EPRow($eid);
+        $role2 = QQ("SELECT * FROM ROLES WHERE ROLEID = ? AND OID = ?",array(ROLE_FADMIN,$er['OID']));
+        while ($r4 = $role2->fetchArray())
+            $sigs[] = $r4['ID'];
+        }
+ 
+    $sigs = array_unique($sigs);
+
     if (count($sigs) >= 2)
     {
         $s2 = '';
@@ -1995,6 +2008,8 @@ function BuildSadesRequest($did)
         }
        
     }
+
+
     return $s2;
 }
 
