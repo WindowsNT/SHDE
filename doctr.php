@@ -446,12 +446,16 @@ $showatt = 1;
     if ($a == 2)
     {
         if ($inc || $sent)
-            $s .= sprintf('<a href="javascript:deldid(%s);">Διαγραφή</a>',$did);
+        {
+
+        }
         else
-            {
-                $s .= sprintf('<a href="javascript:delmid(%s);">Διαγραφή Έκδοσης</a><br><a href="javascript:deldid(%s);">Διαγραφή</a>',$lastmid,$did);
-            }
+        {
+            $s .= sprintf('<a href="javascript:delmid(%s);">Διαγραφή Έκδοσης</a><br>',$lastmid);
+        }
     }
+    $s .= sprintf('<a href="neweggr.php?forward=%s&forwardmid=%s">Προώθηση</a><br>',$did,$lastmid);
+    $s .= sprintf('<a href="javascript:deldid(%s);">Διαγραφή</a>',$did);
 
     $s .= sprintf("</td>");
 

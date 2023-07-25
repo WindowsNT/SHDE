@@ -173,7 +173,10 @@ if (array_key_exists("mid",$req))
     }
 else
    {
-   $msg = array("ID" => "","DATE" => "","MSG" => "","INFO" => "");
+   if(array_key_exists("forwardmid",$req))
+       $msg = MRow($req['forwardmid'],1);
+    else
+       $msg = array("ID" => "","DATE" => "","MSG" => "","INFO" => "");
    if (array_key_exists("copy",$req))
    {
         $msg2 = MRow($req['copy'],1);
@@ -194,6 +197,11 @@ if (array_key_exists("reply",$req))
         $reply = $req['reply'];
         $replydoc = QQ("SELECT * FROM DOCUMENTS WHERE ID = ?",array($reply))->fetchArray();
     }
+if (array_key_exists("forward",$req))
+{
+    $reply = $req['forward'];
+    $replydoc = QQ("SELECT * FROM DOCUMENTS WHERE ID = ?",array($reply))->fetchArray();
+}
 if (array_key_exists("ks",$req))
     $ks = $req['ks'];
 if (array_key_exists("ml",$req))
@@ -274,7 +282,12 @@ else
     Θέμα: <br>
     <?php
         if ($replydoc)
-            $doc['TOPIC'] = sprintf("Απ.: %s",$replydoc['TOPIC']);
+            {
+                if (array_key_exists("forward",$req))
+                    $doc['TOPIC'] = sprintf("Fw.: %s",$replydoc['TOPIC']);
+                else
+                    $doc['TOPIC'] = sprintf("Απ.: %s",$replydoc['TOPIC']);
+            }
     ?>
     <input type="text" class="input" name="topic" value="<?= $doc['TOPIC']?>" required/>
     </div>
