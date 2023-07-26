@@ -125,7 +125,6 @@ if (array_key_exists("shde_username",$_SESSION))
         $r1 = QQ("SELECT * FROM USERS WHERE USERNAME = ?",array($u->username))->fetchArray();
         if (!$r1)
             {
-                QQ("INSERT INTO USERS (USERNAME,LASTNAME,FIRSTNAME,TITLE) VALUES(?,?,?,?)",array($u->username,$u->lastname,$u->firstname,$u->title));
                 $u->uid = $lastRowID;
             }
         else
@@ -1932,8 +1931,10 @@ function SortArrayProist($arr)
     usort($arr, function ($a, $b)  {
         $pr1 = IsProist($a);
         $pr2 = IsProist($b);
-        if ($pr1 == 0 && $pr2 == 0)
-            return strcmp(UserRow($a)['LASTNAME'],UserRow($b)['LASTNAME']);
+        $r1 = UserRow($a);
+        $r2 = UserRow($b);
+        if ($pr1 == 0 && $pr2 == 0 && $r1 && $r2)
+            return strcmp($r1['LASTNAME'],$r2['LASTNAME']);
         if ($pr1 && $pr2 == 0)
             return 1;
         if ($pr1 == 0 && $pr2)
@@ -2003,7 +2004,8 @@ function BuildSadesRequest($did)
         foreach($sigs as $sig)
         {
             $ur = UserRow($sig);
-            $s2 .= sprintf('<a href="shde:%s_%s_%s_%s">SAdES %s</a><br>',$sig,$r1['CLSID'],$anyp == "" ? "X" : base64_encode($anyp),$lev,$ur['LASTNAME']);
+            if ($ur)
+                $s2 .= sprintf('<a href="shde:%s_%s_%s_%s">SAdES %s</a><br>',$sig,$r1['CLSID'],$anyp == "" ? "X" : base64_encode($anyp),$lev,$ur['LASTNAME']);
             $lev++;
         }
        

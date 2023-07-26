@@ -3,6 +3,7 @@
 function DocTR($did,$a,$full = 0,$putoid = 1,$puteid = 1,$putfid = 1)
 {
     global $req;
+    global $u;
     $showtopic = 1; if (array_key_exists("shde_hide_topic",$_SESSION) && $_SESSION['shde_hide_topic'] == 1) $showtopic = 0;
     $showwriter = 1; if (array_key_exists("shde_hide_writer",$_SESSION) && $_SESSION['shde_hide_writer'] == 1) $showwriter = 0;
     $showfolder = 1; if (array_key_exists("shde_hide_folder",$_SESSION) && $_SESSION['shde_hide_folder'] == 1) $showfolder = 0;
@@ -387,7 +388,8 @@ $showatt = 1;
                     $s2 .= sprintf('&#x2022; <a href="sign.php?docs=%s&mid=%s">Ψηφιακή Υπογραφή</a> [%s] ',$r1['ID'],$lastmid,BuildSadesRequest($r1['ID']));
 
                 }
-            $s2 .= sprintf('&#x2022; <a href="javascript:delmid(%s);">Διαγραφή έκδοσης</a>',$lastmid);
+            if ($a == 2)
+                $s2 .= sprintf('&#x2022; <a href="javascript:delmid(%s);">Διαγραφή έκδοσης</a>',$lastmid);
 
         }
 /*            $s2 .= sprintf('
@@ -455,7 +457,8 @@ $showatt = 1;
         }
     }
     $s .= sprintf('<a href="neweggr.php?forward=%s&forwardmid=%s">Προώθηση</a><br>',$did,$lastmid);
-    $s .= sprintf('<a href="javascript:deldid(%s);">Διαγραφή</a>',$did);
+    if ($a == 2)
+        $s .= sprintf('<a href="javascript:deldid(%s);">Διαγραφή</a>',$did);
 
     $s .= sprintf("</td>");
 
