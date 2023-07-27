@@ -90,9 +90,9 @@ if (array_key_exists("AccessToken",$arx))
         curl_setopt($c, CURLOPT_URL, $base );
         curl_setopt($c, CURLOPT_REFERER, $siteroot);
         curl_setopt($c, CURLOPT_POST, true);
-        $params2 = array("SectorCode" => $params['SectorCode'], "EventDeliveryUrl" =>  $siteroot.'/shde/ep.php');
+        $params2 = array("SectorCode" => $params['SectorCode'], "EventDeliveryUrl" =>  $siteroot.'/ep.php');
         $ue = json_encode($params2);
-        $params3 = array("ValidationCode" => guidv4(),"ValidationUrl" =>  $siteroot.'/shde/ep.php');
+        $params3 = array("ValidationCode" => guidv4(),"ValidationUrl" =>  $siteroot.'/ep.php');
         $fields = array('subscriptionData' => $ue,"Model" => json_encode($params3));
         curl_setopt($c,CURLOPT_POSTFIELDS,$fields);
         $r3 = curl_exec($c);

@@ -84,6 +84,13 @@ function PrintRight($eid,$did,$mid)
         $s .= sprintf('<b>%s</b><br>',PriorityString($doc['PRIORITY']));
     if ($doc['DUEDATE'] && strlen($doc['DUEDATE']))
         $s .= sprintf('ΔΙΕΚΠ. ΜΕΧΡΙ: <b>%s</b><br>',date("d/m/Y",$doc['DUEDATE']));
+    if ($doc['EXPIRE'] && strlen($doc['EXPIRE']))
+        {
+            if (date("H",$doc['EXPIRE']) == 0 && date("i",$doc['EXPIRE']) == 0)
+                $s .= sprintf('ΔΙΑΤΗΡΗΣΗ ΜΕΧΡΙ: <b>%s</b><br>',date("d/m/Y",$doc['EXPIRE']));
+            else
+                $s .= sprintf('ΔΙΑΤΗΡΗΣΗ ΜΕΧΡΙ: <b>%s</b><br>',date("d/m/Y H:i",$doc['EXPIRE']));
+        }
     if ($doc['PROT'] && strlen($doc['PROT']))
         {
         $pr = (unserialize($doc['PROT']));

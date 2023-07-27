@@ -7,6 +7,7 @@ $dbxxpending = "/var/www/somewhere/pendingshde.db"; // must be a writable folder
 // Site parameters
 $sitedomain = "example.org";
 $topmail = 'shde@example.org';
+$ct = "https://www.example-org/shde";
 $title = "ΣΗΔΕ";
 
 // Superadmin AFM
@@ -73,7 +74,6 @@ function NewProtocol($txt,$ptype,$user,$level)
 }
 
 // Don't change these
-$siteroot = "https://www.$sitedomain";
 $wshost = "wss://www.$sitedomain/ws/";
 $not_answer = "/shde/notify.php?pushanswer=1";
 $not_js =  "/shde/notify2.js";

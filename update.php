@@ -10,13 +10,13 @@ if (!$u->superadmin)
     diez();
 require_once "output.php";
 PrintHeader('index.php');
-
 $update = new AutoUpdate(__DIR__ . '/temp', __DIR__ . '/../', 60);
 $update->setCurrentVersion('0.0.0');    
 
 
 // Replace with your server update directory
-$update->setUpdateUrl('https://www.msa-apps.com/shde/update.json');
+$ur = $siteroot .'/update.json';
+$update->setUpdateUrl($ur);
 
 // Check for a new update
 if ($update->checkUpdate() === false) {
