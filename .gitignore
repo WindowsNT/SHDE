@@ -2,3 +2,5 @@ configuration.php
 .vscode/
 local/
 shde.db
+update.ini
+update.json
