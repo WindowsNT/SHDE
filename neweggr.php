@@ -320,6 +320,7 @@ else
     <div class="column">
     Διεκπεραίωση μέχρι:
     <input type="date" name="due"  class="input" value="<?= ($doc['DUEDATE']  && strlen($doc['DUEDATE']) > 5) ? date("Y-m-d",(int)$doc['DUEDATE']) : "" ; ?>">
+    <br><br>
     Διατήρηση μέχρι:
     <input type="datetime-local" name="expire"  class="input" value="<?= ($doc['EXPIRE']  && strlen($doc['EXPIRE']) > 5) ? date("Y-m-d H:i",(int)$doc['EXPIRE']) : "" ; ?>">
     </div>
@@ -330,7 +331,7 @@ else
 
     <article class="panel is-link">
   <p class="panel-heading">
-    Παράμετροι
+    Επιπλέον Παράμετροι
   </p>
   <div class="panel-block is-active">
     <div class="columns">

@@ -369,7 +369,8 @@ $showatt = 1;
                  */
 
             $s2 .= '<br>';
-            $s2 .= sprintf(' <a href="neweggr.php?did=%s&mid=%s">Επεξεργασία</a>',$r1['ID'],$lastmid);
+            $s2 .= sprintf(' <a href="neweggr.php?did=%s&mid=%s">Επεξεργασία</a> ',$r1['ID'],$lastmid);
+            $s2 .= sprintf('&#x2022;  <a href="text.php?did=%s&mid=%s">Κείμενο</a> ',$r1['ID'],$lastmid);
             if ($showcomm)
                $s2 .= sprintf('&#x2022; <a href="comments.php?did=%s&mid=%s">Σχόλια</a>',$r1['ID'],$lastmid);
             if ($showsx)

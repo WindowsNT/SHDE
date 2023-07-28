@@ -11,11 +11,17 @@ if (!$u->superadmin)
 require_once "output.php";
 PrintHeader('index.php');
 $update = new AutoUpdate(__DIR__ . '/temp', __DIR__ . '/../', 60);
-$update->setCurrentVersion('0.0.0');    
-
+$cj = json_decode(file_get_contents("update.json"));
+foreach($cj as $key=>$value)
+    {
+        $cv = $key;
+        break;
+    }
+$update->setTempDir(sys_get_temp_dir());
+$update->setCurrentVersion($cv);    
 
 // Replace with your server update directory
-$ur = $siteroot .'/update.json';
+$ur = $siteroot;
 $update->setUpdateUrl($ur);
 
 // Check for a new update
@@ -25,7 +31,19 @@ if ($update->checkUpdate() === false) {
 
 if ($update->newVersionAvailable()) 
 {
+    echo 'New Version: ' . $update->getLatestVersion() . '<br>';
+    $result = $update->update();
+    if ($result === true) {
+        echo 'Update simulation successful<br>';
+    } else {
+        echo 'Update simulation failed: ' . $result . '!<br>';
 
+        if ($result = AutoUpdate::ERROR_SIMULATE) {
+            echo '<pre>';
+            var_dump($update->getSimulationResults());
+            echo '</pre>';
+        }
+    }
 }
 else
-    die("<br><br>No new version is available.");
+    echo 'No new version is available (Current:  ' . $cv . ')<br>';
