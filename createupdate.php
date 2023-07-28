@@ -1,6 +1,6 @@
 <?php
 
-die; // nwy
+
 set_time_limit(60);
 $zipFile = tempnam(sys_get_temp_dir(),"zip");
 $zipFile .= ".zip";
@@ -10,7 +10,8 @@ if ($zipArchive->open($zipFile, (ZipArchive::CREATE | ZipArchive::OVERWRITE)) !=
     die;
 
 
-$zipArchive->addGlob('./[!shde.db]*');
+$options = array( 'remove_all_path' => TRUE);
+$zipArchive->addGlob('*.{php,png,pdf,svg,js,ttf,css,json,lock,txt,md,ini,jpg}',GLOB_BRACE,$options);
 if ($zipArchive->status != ZIPARCHIVE::ER_OK)
     die;
 
