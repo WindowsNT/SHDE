@@ -115,7 +115,10 @@ function PrintRight($eid,$did,$mid)
         $cnx = 1;
         foreach($rr as $r)
         {
-            $s .= sprintf("<b>%s.</b> %s<br>",$cnx,$r);
+            if (count($rr) == 1)
+                $s .= sprintf("%s<br>",$r);
+            else
+                $s .= sprintf("<b>%s.</b> %s<br>",$cnx,$r);
             $cnx++;
         }
     }
@@ -130,7 +133,10 @@ function PrintRight($eid,$did,$mid)
         $cnx = 1;
         foreach($rr as $r)
         {
-            $s .= sprintf("<b>%s.</b> %s<br>",$cnx,$r);
+            if (count($rr) == 1)
+                $s .= sprintf("%s<br>",$r);
+            else
+                $s .= sprintf("<b>%s.</b> %s<br>",$cnx,$r);
             $cnx++;
         }
     }

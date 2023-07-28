@@ -7,8 +7,13 @@ PrintHeader();
 
 
 $panels = 0;
+$alimos2 = 0;
+if (isset($alimos))
+  $alimos2 = 1;
+
 function SuperAdminSection()
 {
+  global $alimos2;
   ?>
   <div id="m_9" style="display:none;">
   <article class="message is-danger block">
@@ -24,6 +29,11 @@ function SuperAdminSection()
     <button class="autobutton is-link button block" href="orgchart.php?reload=1">Reload Οργανόγραμμα</button>
     <button class="autobutton is-danger button block" href="impersonate.php">Impersonation</button>
     <button class="autobutton is-link button block" href="update.php">SHDE Update</button>
+    <?php
+    if (isset($alimos2))
+      echo '<button class="autobutton is-info button block" href="alimos.php">Λειτουργείες ΜΣΑ</button>';
+
+    ?>
   </div>
  </article>
  </div>

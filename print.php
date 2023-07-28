@@ -3,6 +3,7 @@
 require_once "functions.php";
 require_once "printit.php";
 require_once "pdfstuff.php";
+set_time_limit(120);
 
 if (array_key_exists("clsid",$req))
 {
