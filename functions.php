@@ -1638,7 +1638,7 @@ function DeleteMessage($mid,$fc = 0)
     return true;
 }
 
-function DeleteDocument($did,$fc = 0)
+function DeleteDocument($did,$fc = 0,$notrs = 0)
 {
     global $u;
     if (UserAccessDocument($did,$u->uid) != 2 && $fc == 0)
@@ -1669,14 +1669,16 @@ function DeleteDocument($did,$fc = 0)
         }
     }
 
-    QQ("BEGIN TRANSACTION");
+    if ($notrs == 0)
+        QQ("BEGIN TRANSACTION");
     $q1 = QQ("SELECT * FROM MESSAGES WHERE DID = ?",array($did));
     while($r1 = $q1->fetcharray())
         QQ("DELETE FROM ATTACHMENTS WHERE MID = ?",array($r1['ID']));
 
     QQ("DELETE FROM MESSAGES WHERE DID = ?",array($did));
     QQ("DELETE FROM DOCUMENTS WHERE ID = ?",array($did));
-    QQ("COMMIT");
+    if ($notrs == 0)
+        QQ("COMMIT");
     return true;
 }
 

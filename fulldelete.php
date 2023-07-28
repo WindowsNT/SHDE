@@ -10,7 +10,7 @@ foreach(explode(",",$req['docs']) as $did)
 {
     if (UserAccessDocument($did,$u->uid) != 2)
         continue;
-    DeleteDocument($did);
+    DeleteDocument($did,0,1);
 }  
 QQ("COMMIT");
 redirect($whereret);
