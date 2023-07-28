@@ -8,6 +8,7 @@
 */
 
 ini_set('display_errors', 1); error_reporting(E_ALL);
+
 $timezone = "Europe/Athens";
 date_default_timezone_set($timezone);
 $mobile = 0;
