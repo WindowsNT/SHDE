@@ -24,7 +24,7 @@ else
 if (array_key_exists("zip",$req))
 {
     $zipf = tempnam(sys_get_temp_dir(),"pdff");
-    $zip= new ZipArchive;
+    $zip = new ZipArchive;
     if ($zip->open($zipf, ZipArchive::CREATE)!==TRUE) {
         exit("cannot open <$filename>\n");
     }
@@ -39,7 +39,9 @@ if (array_key_exists("zip",$req))
         $e = PrintAll($doc,$mid);
         $eidr = EPRow($doc2['EID']);
         $e2 = PDFConvert($eidr['NAME'],$doc2['TOPIC'],$e,$doc2['CLSID'],$msg2['DATE'],$doc2['PDFPASSWORD'] ? $doc2['PDFPASSWORD'] : '');
-        $zip->addFromString($doc.".pdf",$e2);
+        $tf = tempnam(sys_get_temp_dir(),"dat");
+        file_put_contents($tf,$e2);
+        $zip->addFile($tf,$doc.".pdf");
     }
     $zip->close();
     header("Content-type: application/zip");
