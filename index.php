@@ -31,7 +31,7 @@ function SuperAdminSection()
     <button class="autobutton is-link button block" href="update.php">SHDE Update</button>
     <?php
     if (isset($alimos2))
-      echo '<button class="autobutton is-info button block" href="alimos.php">Λειτουργείες ΜΣΑ</button>';
+      echo '<button class="autobutton is-info button block" href="alimos.php">Λειτουργίες ΜΣΑ</button>';
 
     ?>
   </div>

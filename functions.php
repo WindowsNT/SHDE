@@ -1682,6 +1682,15 @@ function DeleteDocument($did,$fc = 0,$notrs = 0)
     return true;
 }
 
+function Fy($ln,$fn)
+{
+    $la1 = mb_substr($ln, -1,mb_strlen($ln,'UTF-8'),'UTF-8');
+    $la2 = mb_substr($fn, -1,mb_strlen($fn,'UTF-8'),'UTF-8');
+    if ($la1 == 'Σ' || $la2 == 'Σ' || $la1 == 'ς' || $la2 == 'ς')
+        return 1;
+    return 2;
+}
+
 function DocumentDecrypt(&$dr)
 {
     if (!$dr)
