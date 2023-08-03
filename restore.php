@@ -9,7 +9,7 @@ function RestoreAttachment($j,$mid = 0)
     global $lastRowID;
     if ($mid == 0)
         $mid = $j['MID'];
-    QQ("INSERT INTO ATTACHMENTS (MID,NAME,TYPE,DESC,DATA) VALUES(?,?,?,?,?)",array($mid,$j['NAME'],$j['TYPE'],$j['DESC'],base64_decode($j['DATA'])));
+    QQ("INSERT INTO ATTACHMENTS (MID,NAME,TYPE,DESCRIPTION,DATA) VALUES(?,?,?,?,?)",array($mid,$j['NAME'],$j['TYPE'],$j['DESCRIPTION'],base64_decode($j['DATA'])));
     $j['MID'] = $mid;
     $j['ID'] = $lastRowID;
     if (!$lastRowID)
@@ -128,6 +128,37 @@ function RestoreEndpoint($j,$oid = 0)
     return $j;
 }
 
+function RestoreUsers($j)
+{
+    foreach($j['users'] as $u)
+    {
+        QQ("INSERT INTO USERS (ID,USERNAME,LASTNAME,FIRSTNAME,TITLE,EMAIL,CLASSIFIED) VALUES(?,?,?,?,?,?,?)",array(
+            $u['ID'],$u['USERNAME'],$u['LASTNAME'],$u['FIRSTNAME'],$u['TITLE'],$u['EMAIL'],$u['CLASSIFIED']
+        ));
+    }
+}
+
+function RestoreAPI($j)
+{
+    foreach($j['apikeys'] as $u)
+    {
+        QQ("INSERT INTO APIKEYS (ID,UID,T1) VALUES(?,?,?)",array(
+            $u['ID'],$u['UID'],$u['T1']
+        ));
+    }
+}
+
+function RestoreGlobalRoles($j)
+{
+    foreach($j['roles'] as $role)
+    {
+        QQ("INSERT INTO ROLES (UID,ROLEID) VALUES(?,?)",array(
+            $role['UID'],$role['ROLEID']
+        ));
+    }
+
+}
+
 function RestoreOrganization($j)
 {
     global $lastRowID;
@@ -169,10 +200,18 @@ if (array_key_exists("file_x",$_FILES) && strlen($_FILES['file_x']['tmp_name']))
             die;
         if (!$u->superadmin)
             die;
-  
         if (array_key_exists("organizations",$j))
         {
             echo 'Restoring full backup<br><hr>';
+            RestoreUsers($j);
+            RestoreGlobalRoles($j);
+            RestoreAPI($j);
+            foreach($j['organizations'] as $op)
+            {
+             RestoreOrganization($op);
+             nop();
+            }
+    
             printr($j);
           }
         die;
