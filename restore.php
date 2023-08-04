@@ -2,6 +2,62 @@
 
 require_once "functions.php";
 
+$user_id_map = array();
+$endpoint_id_map = array();
+$folder_id_map = array();
+$oid_map = array();
+$document_id_map = array();
+$message_id_map = array();
+
+
+function Swap($t1,&$rows,$col)
+{
+    foreach($rows as &$row)
+    {
+        foreach($t1 as $t)
+        {
+            if ($t[0] == $row[$col])
+            {
+                $row[$col] = $t[1];
+                break;
+            }
+        }
+    }
+}
+
+
+function GenericInsertTableAll($n,$row,$killid = 0)
+{
+    global $lastRowID;
+    $x = sprintf("INSERT INTO %s (",$n);
+    foreach($row as $k=>$r)
+    {
+        if (is_numeric(($k)))
+            continue;
+        if ($k == "ID" && $killid == 1)
+            continue;
+        $x .= $k;
+        $x .= ',';
+    }
+    $x = substr($x, 0, -1);
+    $x .= ') VALUES (';
+    $aa = array();
+    foreach($row as $k=>$r)
+    {
+        if (is_numeric(($k)))
+            continue;
+        if ($k == "ID" && $killid == 1)
+            continue;
+        $x .= '?';
+        $x .= ',';
+        $aa[] = $r;
+    }
+    $x = substr($x, 0, -1);
+    $x .= ')';
+    $lastRowID = 0;
+    QQ($x,$aa);
+    return $lastRowID;
+}
 
 
 function RestoreAttachment($j,$mid = 0)
@@ -9,7 +65,8 @@ function RestoreAttachment($j,$mid = 0)
     global $lastRowID;
     if ($mid == 0)
         $mid = $j['MID'];
-    QQ("INSERT INTO ATTACHMENTS (MID,NAME,TYPE,DESCRIPTION,DATA) VALUES(?,?,?,?,?)",array($mid,$j['NAME'],$j['TYPE'],$j['DESCRIPTION'],base64_decode($j['DATA'])));
+    $j['MID']  = $mid;
+    GenericInsertTableAll("ATTACHMENTS",$j,1);
     $j['MID'] = $mid;
     $j['ID'] = $lastRowID;
     if (!$lastRowID)
@@ -20,16 +77,26 @@ function RestoreAttachment($j,$mid = 0)
 function RestoreMessage($j,$uid = 0,$did = 0) 
 {
     global $lastRowID;
+    global $message_id_map;
     if ($uid == 0)
         $uid = $j['m']['UID'];
     if ($did == 0)
         $did = $j['m']['DID'];
-    QQ("INSERT INTO MESSAGES (UID,DID,MSG,DATE,INFO) VALUES(?,?,?,?,?)",array($uid,$did,$j['m']['MSG'],$j['m']['DATE'],$j['m']['INFO'])); 
+
+    $oldid = $j['m']['ID'];
+    $j['m']['UID'] = $uid;
+    $j['m']['DID'] = $did;
+    GenericInsertTableAll("MESSAGES",$j['m'],1);
+    if (!$lastRowID)
+        return null;
+    $message_id_map[] =  array($oldid,$lastRowID);
+    
     $j['m']['DID'] = $did;
     $j['m']['UID'] = $uid;
     $j['m']['ID'] = $lastRowID;
     if (!$lastRowID)
         return null;
+
     foreach($j['attachments'] as $attachment)
     {
         RestoreAttachment($attachment,$j['m']['ID']);
@@ -42,43 +109,52 @@ function RestoreMessage($j,$uid = 0,$did = 0)
 function RestoreDocument($j,$uid = 0,$eid = 0,$fid = 0) 
 {
     global $lastRowID;
+    global $document_id_map;
+
     if ($uid == 0)
         $uid = $j['d']['UID'];
     if ($eid == 0)
         $eid = $j['d']['EID'];
     if ($fid == 0)
         $fid = $j['d']['FID'];
-    QQ("INSERT INTO DOCUMENTS (UID,EID,TOPIC,FID,CLASSIFIED,READSTATE,PROT,RECPX,RECPY,RECPZ,KOINX,KOINY,KOINZ,BCCX,BCCY,BCCZ,TYPE,CLSID,ESWX) VALUES(
-        ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
-    )",array($uid,$eid,$j['d']['TOPIC'],$fid,$j['d']['CLASSIFIED'],$j['d']['READSTATE'],$j['d']['PROT'],$j['d']['RECPX'],$j['d']['RECPY'],$j['d']['RECPZ'],$j['d']['KOINX'],$j['d']['KOINY'],$j['d']['KOINZ'],$j['d']['BCCX'],$j['d']['BCCY'],$j['d']['BCCZ'],$j['d']['TYPE'],$j['d']['CLSID'],$j['d']['ESWX'])); 
+
+    $oldid = $j['d']['ID'];
+    $j['d']['FID'] = $fid;
+    $j['d']['EID'] = $eid;
+    $j['d']['UID'] = $uid;
+    GenericInsertTableAll("DOCUMENTS",$j['d'],1);
     if (!$lastRowID)
         return null;
+    $document_id_map[] =  array($oldid,$lastRowID);
     $j['d']['EID'] = $eid;
     $j['d']['UID'] = $uid;
     $j['d']['ID'] = $lastRowID;
-
     foreach($j['messages'] as $message)
     {
         RestoreMessage($message,$uid,$j['d']['ID']);
-        nop();
     }
     return $j;
 }
 
-function RestoreFolder($j,$eid = 0)
+function RestoreFolder($j,$eid)
 {
     global $lastRowID;
-    if ($eid == 0)
-        $eid = $j['f']['EID'];
-    $j['f']['SPECIALID'] = 0; // Always non special ID
+    global $folder_id_map;
+    global $user_id_map;
 
-    QQ("INSERT INTO FOLDERS (EID,SPECIALID,NAME,PARENT,CLASSIFIED) VALUES (?,?,?,?,?)",array(
-        $eid,$j['f']['SPECIALID'],$j['f']['NAME'],$j['f']['PARENT'],$j['f']['CLASSIFIED']
-    ));
+
+    $j['f']['EID'] = $eid;
+    $oldid = $j['f']['ID'];
+    $oldp = $j['f']['PARENT'];
+    $j['f']['PARENT'] = 0;
+    GenericInsertTableAll("FOLDERS",$j['f'],1);
     if (!$lastRowID)
         return null;
+    $folder_id_map[] =  array($oldid,$lastRowID,$oldp);
+
     $j['f']['EID'] = $eid;
     $j['f']['ID'] = $lastRowID;
+
     foreach($j['documents'] as $document)
     {
         RestoreDocument($document,0,$eid,$j['f']['ID']);
@@ -87,107 +163,150 @@ function RestoreFolder($j,$eid = 0)
     return $j;
 }
 
-function RestoreEndpoint($j,$oid = 0)
+
+function RestoreEndpoint($j,$oid)
 {
     global $lastRowID;
-    if ($oid == 0)
-        $oid = $j['e']['OID'];
+    global $endpoint_id_map;
+    global $folder_id_map;
 
-    // parent is always 0
+    $j['e']['OID'] = $oid;
+    $oldid = $j['e']['ID'];
+    $oldp = $j['e']['PARENT'];
     $j['e']['PARENT'] = 0;
-
-    QQ("INSERT INTO ENDPOINTS (OID,NAME,PARENT,EMAIL,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,A1,A2,A3,TEL1,TEL2,TEL3) VALUES (
-        ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
-    )",array(
-        $oid,$j['e']['NAME'],$j['e']['PARENT'],$j['e']['EMAIL'],
-        $j['e']['T0'],$j['e']['T1'],$j['e']['T2'],$j['e']['T3'],$j['e']['T4'],$j['e']['T5'],$j['e']['T6'],$j['e']['T7'],$j['e']['T8'],$j['e']['T9'],
-        $j['e']['A1'],$j['e']['A2'],$j['e']['A3'],$j['e']['TEL1'],$j['e']['TEL2'],$j['e']['TEL3']
-    ));
+    GenericInsertTableAll("ENDPOINTS",$j['e'],1);
     if (!$lastRowID)
         return null;
     $eid = $lastRowID;
     $j['e']['ID'] = $eid;
+    $endpoint_id_map[] =  array($oldid,$eid,$oldp);
 
+    // Folders
     foreach($j['folders'] as $folder)
     {
         RestoreFolder($folder,$eid);
-        nop();
     }
+
+    // Folder resolve
+    foreach($folder_id_map as $epm)
+    {
+        $refer_parent = $epm[2];
+        foreach($folder_id_map as $epm2)
+        {
+            if ($refer_parent == $epm2[0])
+                {
+                    QQ("UPDATE FOLDERS SET PARENT = ? WHERE ID = ?",array($epm2[1],$epm[1]));
+                    break;
+                }
+        }
+    }
+
+    
+    // Roles
+    Swap($endpoint_id_map,$j['roles'],"EID");
     foreach($j['roles'] as $role)
     {
-        QQ("INSERT INTO ROLES (UID,ROLEID,OID,EID) VALUES(?,?,?,?)",array(
-            $role['UID'],$role['ROLEID'],$oid,$eid
-        ));
+        GenericInsertTableAll("ROLES",$role,1);
+        $role['ID'] = $lastRowID;
     }
+    
+    // AB
+    Swap($endpoint_id_map,$j['ab'],"EID");
     foreach($j['ab'] as $ab)
     {
-        QQ("INSERT INTO ADDRESSBOOK (OID,EID,SHDE,CLASSIFIED,PARENT,LASTNAME,FIRSTNAME,TITLE,EMAIL,DATA) VALUES(?,?,?,?,?,?,?,?,?,?)",array(
-            $oid,$eid,$ab['SHDE'],$ab['CLASSIFIED'],$ab['PARENT'],$ab['LASTNAME'],$ab['FIRSTNAME'],$ab['TITLE'],$ab['EMAIL'],$ab['DATA']
-        ));
+        GenericInsertTableAll("ADDRESSBOOK",$ab,1);
+        $ab['ID'] = $lastRowID;
     }
     return $j;
 }
 
 function RestoreUsers($j)
 {
+    global $lastRowID;
+    global $user_id_map;
     foreach($j['users'] as $u)
     {
-        QQ("INSERT INTO USERS (ID,USERNAME,LASTNAME,FIRSTNAME,TITLE,EMAIL,CLASSIFIED) VALUES(?,?,?,?,?,?,?)",array(
-            $u['ID'],$u['USERNAME'],$u['LASTNAME'],$u['FIRSTNAME'],$u['TITLE'],$u['EMAIL'],$u['CLASSIFIED']
-        ));
+        $a = $u['ID'];
+        GenericInsertTableAll("USERS",$u,1);
+        $user_id_map[] = array($a,$lastRowID);
+        $u['ID'] = $lastRowID;
     }
 }
 
 function RestoreAPI($j)
 {
+    global $lastRowID;
+    global $user_id_map;
+    Swap($user_id_map,$j['apikeys'],"UID");
     foreach($j['apikeys'] as $u)
     {
-        QQ("INSERT INTO APIKEYS (ID,UID,T1) VALUES(?,?,?)",array(
-            $u['ID'],$u['UID'],$u['T1']
-        ));
+        GenericInsertTableAll("APIKEYS",$u,1);
     }
 }
 
 function RestoreGlobalRoles($j)
 {
+    global $user_id_map;
+    global $lastRowID;
+    Swap($user_id_map,$j['roles'],"UID");
+
     foreach($j['roles'] as $role)
     {
-        QQ("INSERT INTO ROLES (UID,ROLEID) VALUES(?,?)",array(
-            $role['UID'],$role['ROLEID']
-        ));
+        GenericInsertTableAll("ROLES",$role,1);
+        $role['ID'] = $lastRowID;
     }
 
 }
 
+
 function RestoreOrganization($j)
 {
     global $lastRowID;
-    QQ("INSERT INTO ORGANIZATIONS (NAME) VALUES (?)",array(
-        $j['o']['NAME']
-    ));
+    global $oid_map;
+    global $endpoint_id_map;
+    $lastRowID = 0;
+    $old = $j['o']['ID'];
+    GenericInsertTableAll("ORGANIZATIONS",$j['o'],1);
     if (!$lastRowID)
         return null;
     $oid = $lastRowID;
+    $oid_map[] = array($old,$lastRowID);
     $j['o']['ID'] = $oid;
 
-
     foreach($j['endpoints'] as $ep)
-        {
-         RestoreEndpoint($ep,$oid);
-         nop();
-        }
+    {
+        RestoreEndpoint($ep,$oid);
+        nop();
+    }
 
+    // Parent resolve
+    foreach($endpoint_id_map as $epm)
+    {
+        $refer_parent = $epm[2];
+        foreach($endpoint_id_map as $epm2)
+        {
+            if ($refer_parent == $epm2[0])
+                {
+                    QQ("UPDATE ENDPOINTS SET PARENT = ? WHERE ID = ?",array($epm2[1],$epm[1]));
+                    break;
+                }
+        }
+    }
+
+    // Roles
+    Swap($oid_map,$j['roles'],"OID");
     foreach($j['roles'] as $role)
     {
-        QQ("INSERT INTO ROLES (UID,ROLEID,OID) VALUES(?,?,?)",array(
-            $role['UID'],$role['ROLEID'],$oid
-        ));
+        GenericInsertTableAll("ROLES",$role,1);
+        $role['ID'] = $lastRowID;
     }
+
+    // AB
+    Swap($oid_map,$j['ab'],"OID");
     foreach($j['ab'] as $ab)
     {
-        QQ("INSERT INTO ADDRESSBOOK (OID,SHDE,CLASSIFIED,PARENT,LASTNAME,FIRSTNAME,TITLE,EMAIL,DATA) VALUES(?,?,?,?,?,?,?,?,?)",array(
-            $oid,$ab['SHDE'],$ab['CLASSIFIED'],$ab['PARENT'],$ab['LASTNAME'],$ab['FIRSTNAME'],$ab['TITLE'],$ab['EMAIL'],$ab['DATA']
-        ));
+        GenericInsertTableAll("ADDRESSBOOK",$ab,1);
+        $ab['ID'] = $lastRowID;
     }
     return $j;
 }

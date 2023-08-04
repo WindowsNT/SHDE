@@ -48,7 +48,7 @@ function BackupRoles($oid,$eid)
     if ($eid && $oid)
         $q1 = QQ("SELECT * FROM ROLES WHERE OID = ? AND EID = ?",array($oid,$eid));
     if ($eid && !$oid)
-        $q1 = QQ("SELECT * FROM ROLES WHERE EID = ? AND (OID IS NULL OR OID = 0)",array($eid));
+        $q1 = QQ("SELECT * FROM ROLES WHERE EID = ?",array($eid));
     if (!$eid && $oid)
         $q1 = QQ("SELECT * FROM ROLES WHERE OID = ? AND (EID IS NULL OR EID = 0)",array($oid));
     if (!$eid && !$oid)
@@ -261,7 +261,8 @@ if (array_key_exists("oid",$req))
 else
 if (array_key_exists("e",$req) && $u->superadmin)
 {
-    $j = serialize(BackupEverything());
+    $ev = BackupEverything();
+    $j = serialize($ev);
     hdr();
     header(sprintf('Content-Disposition: attachment; filename="all.txt"'));
     echo $j;

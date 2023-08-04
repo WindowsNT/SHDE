@@ -178,7 +178,10 @@ function PrintRoles()
         if ($r['ROLEID'] == ROLE_EPADMIN)            printf('<td>Διαχειριστής EndPoint</td>');
         if ($r['ROLEID'] == ROLE_FADMIN)            printf('<td>Διαχειριστής Φορέα</td>');
         if ($r['ROLEID'] == ROLE_SIGNER0)            printf('<td>Τελικός Υπογράφων</td>');
-        printf('<td>%s  &mdash; %s</td>',$r['OID'],$f1['NAME']);
+        if ($f1)
+            printf('<td>%s  &mdash; %s</td>',$r['OID'],$f1['NAME']);
+        else
+            printf('<td></td>',$r['OID'],$f1 ? $f1['NAME'] : "");
         if ($e1)
             printf('<td>%s  &mdash; %s</td>',$r['EID'],$e1['NAME']);
         else
