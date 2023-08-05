@@ -84,6 +84,7 @@ function BackupAttachment($id)
     $ar = QQ("SELECT * FROM ATTACHMENTS WHERE ID = ?",array($id))->fetchArray();
     if (!$ar)
         return null;
+    $ar['DATA'] = GetBinary('ATTACHMENTS','DATA',$id);
     $ar['DATA'] = base64_encode($ar['DATA']);
     return Array1($ar);
 }
@@ -96,6 +97,8 @@ function BackupMessage($id)
     $ar = QQ("SELECT * FROM MESSAGES WHERE ID = ?",array($id))->fetchArray();
     if (!$ar)
         return null;
+    if ($ar['SIGNEDPDF'] && strlen($ar['SIGNEDPDF']))
+        $ar['SIGNEDPDF'] = base64_encode($ar['SIGNEDPDF']);
     $b = array();
     $b['attachments'] = array();
     $q1 = QQ("SELECT * FROM ATTACHMENTS WHERE MID = ?",array($id));

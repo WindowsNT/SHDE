@@ -846,12 +846,14 @@ function PrintMyDocuments($uid,$fid = 0,$eid = 0,$oid = 0,$full = 0,$did = 0)
 
 
 );
+    if ($oid == 0) return;
     $q1 = QQ("SELECT * FROM DOCUMENTS ORDER BY ID DESC");
     if ($did)
     {
         $s = '';
         $q1 = QQ("SELECT * FROM DOCUMENTS WHERE ID = ?",array($did));
     }
+
     while($r1 = $q1->fetchArray())
     {
         DocumentDecrypt($r1);

@@ -26,7 +26,7 @@ function Swap($t1,&$rows,$col)
 }
 
 
-function GenericInsertTableAll($n,$row,$killid = 0)
+function GenericInsertTableAll($n,$row,$killid = 0,$b64 = array())
 {
     global $lastRowID;
     $x = sprintf("INSERT INTO %s (",$n);
@@ -50,7 +50,10 @@ function GenericInsertTableAll($n,$row,$killid = 0)
             continue;
         $x .= '?';
         $x .= ',';
-        $aa[] = $r;
+        if (in_array($k,$b64))
+            $aa[] = base64_decode($r);
+        else
+            $aa[] = $r;
     }
     $x = substr($x, 0, -1);
     $x .= ')';
@@ -66,7 +69,7 @@ function RestoreAttachment($j,$mid = 0)
     if ($mid == 0)
         $mid = $j['MID'];
     $j['MID']  = $mid;
-    GenericInsertTableAll("ATTACHMENTS",$j,1);
+    GenericInsertTableAll("ATTACHMENTS",$j,1,array("DATA"));
     $j['MID'] = $mid;
     $j['ID'] = $lastRowID;
     if (!$lastRowID)
@@ -86,7 +89,7 @@ function RestoreMessage($j,$uid = 0,$did = 0)
     $oldid = $j['m']['ID'];
     $j['m']['UID'] = $uid;
     $j['m']['DID'] = $did;
-    GenericInsertTableAll("MESSAGES",$j['m'],1);
+    GenericInsertTableAll("MESSAGES",$j['m'],1,array("SIGNEDPDF"));
     if (!$lastRowID)
         return null;
     $message_id_map[] =  array($oldid,$lastRowID);
