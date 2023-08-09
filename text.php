@@ -18,7 +18,7 @@ if (UserAccessMessage($req['mid'],$u->uid) < 2)
 
 if (array_key_exists("c",$_POST))
 {
-    QQ("UPDATE MESSAGES SET MSG = ?,DATE = ?,UID = ? WHERE ID = ?",array($_POST['msg'],time(),$u->uid,$_POST['mid']));
+    QQ("UPDATE MESSAGES SET MSG = ?,APPENDIX = ?,DATE = ?,UID = ? WHERE ID = ?",array($_POST['msg'],$_POST['appendix'],time(),$u->uid,$_POST['mid']));
     $whereret = 'eggr.php';
     if (array_key_exists("shde_eggrurl",$_SESSION))
         $whereret = $_SESSION['shde_eggrurl'];
@@ -33,6 +33,9 @@ if (array_key_exists("c",$_POST))
     <input type="hidden" name="mid" value="<?= $msg['ID'] ?>"  />
     <input type="hidden" name="did" value="<?= $doc['ID'] ?>"  />
     <textarea name="msg" id="msg" data-lines="100"><?= $msg['MSG']?></textarea>
+    <br><br>
+    Παράρτημα (εφόσον υπάρχει):<br><br>
+    <textarea name="appendix" id="appendix" data-lines="100"><?= $msg['APPENDIX']?></textarea>
     <br><br>
     <button class="button is-primary">Υποβολή</button>
 
@@ -56,6 +59,7 @@ if (array_key_exists("c",$_POST))
             }
 
         }, 15000);
+        summer("#appendix");
     });
 </script>
 

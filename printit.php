@@ -204,6 +204,18 @@ function PrintSignature($docrow)
     return $a;
 }
 
+function PrintAppendix($doc,$msg)
+{
+    if (strlen($msg['APPENDIX'] > 10))
+    {
+        $a =  '<div style="text-align:center">Παράρτημα</div><br>';
+        $a .= $msg['APPENDIX']; 
+        return $a;
+    }
+    return '';
+}
+
+
 function PrintAttachments($doc,$msg,$mid)
 {
     $s = '';
@@ -359,6 +371,7 @@ function PrintAll($did,$mid)
     $s .= PrintRT($doc);
     $s .= PrintAttachments($doc,$msg,$msg['ID']);
     $s .= PrintEsw($doc);
+    $s .= PrintAppendix($doc,$msg);
     if ($doc['ORIGINALITY'] == 1)
         {
             $s .= '<br>ΑΚΡΙΒΕΣ ΑΝΤΙΓΡΑΦΟ';
