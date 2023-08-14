@@ -504,7 +504,6 @@ function Selects()
             {
                 ids.push(did);
             }
-    
                 $.ajax({
                     url: "protocol.php",
                     method: "POST",

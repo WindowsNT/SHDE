@@ -94,8 +94,11 @@ function PrintRight($eid,$did,$mid)
     if ($doc['PROT'] && strlen($doc['PROT']))
         {
         $pr = (unserialize($doc['PROT']));
-        $s .= sprintf('%s, Α.Π. %s &mdash; %s',$ep['A3'],$pr['n'],date("d/m/Y H:i",$pr['t']));
-        }
+        if (array_key_exists("full",$pr))
+            $s .= sprintf('%s, Α.Π. %s',$ep['A3'],$pr['full']);
+        else
+            $s .= sprintf('%s, Α.Π. %s &mdash; %s',$ep['A3'],$pr['n'],date("d/m/Y H:i",$pr['t']));
+    }
 
     $fmt = unserialize($defform);
     if ($doc['FORMATTING'])
