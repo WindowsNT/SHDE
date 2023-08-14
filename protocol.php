@@ -1,12 +1,14 @@
 <?php
 
 
+
 require_once "functions.php";
 if (!$u)
     die;
 if ($u->uid == 0)
     die;
 
+    
 if (array_key_exists("items",$req))
 {
     if (!is_array($req['items']))
