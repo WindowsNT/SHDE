@@ -20,7 +20,6 @@ require_once "pdfstuff.php";
 
 function SendAsMail($did,$mid)
 {
-    xdebug_break();
     global $title;
     $err = 0;
     $q = QQ("SELECT * FROM DOCUMENTS WHERE ID = ?",array($did))->fetchArray();
