@@ -427,11 +427,14 @@ if ($u && $u->uid > 0)
 
 if ($infail)
 {
-    printf('<br><br>Είστε διαβαθμισμένος χρήστης. Για λόγους ασφαλείας μπορείτε να μπαίνετε στο ΣΗΔΕ <b>μόνο με βιομετρικό login</b> εκτός και αν επεξεργαστείτε μόνο αδιαβάθμιτα έγγραφα. <br><br>');
+    $_SESSION['shde_needbio'] = 2;
+    redirect("index.php");
+/*    printf('<br><br>Είστε διαβαθμισμένος χρήστης. Για λόγους ασφαλείας μπορείτε να μπαίνετε στο ΣΗΔΕ <b>μόνο με βιομετρικό login</b> εκτός και αν επεξεργαστείτε μόνο αδιαβάθμιτα έγγραφα. <br><br>');
     $q = QQ("SELECT * FROM BIO_INFO WHERE UID = ?",array($u->uid))->fetchArray();
     if (!$q)
         printf('<button class="is-primary button is-small block" onclick="newregistration();">Δημιουργία Βιομετρικού Login</button> ');
         printf('<button class="autobutton button is-small is-warning" href="bio.php?release=1">Συνέχεια χωρίς διαβάθμιση</button> ');
         printf('<button class="autobutton button is-small is-danger" href="logout.php?return=index.php">Logout</button>');
+*/
 
 }
