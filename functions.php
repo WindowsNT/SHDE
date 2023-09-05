@@ -28,6 +28,7 @@ $defform = serialize(array("form_recp" => "0"));
 
 
 // Role IDs
+define('ROLE_AA', 25);
 define('ROLE_USER', 24);
 define('ROLE_EDITOR', 23);
 define('ROLE_EPADMIN', 22);
@@ -2000,15 +2001,17 @@ function BuildSadesRequest($did)
     {
         $role2 = QQ("SELECT * FROM ROLES WHERE ROLEID = ? AND EID = ?",array(ROLE_EPADMIN,$eid));
         while ($r4 = $role2->fetchArray())
-            $sigs[] = $r4['ID'];
+            $sigs[] = $r4['UID'];
         $er = EPRow($eid);
         $role2 = QQ("SELECT * FROM ROLES WHERE ROLEID = ? AND OID = ?",array(ROLE_FADMIN,$er['OID']));
         while ($r4 = $role2->fetchArray())
-            $sigs[] = $r4['ID'];
+            $sigs[] = $r4['UID'];
+        $role2 = QQ("SELECT * FROM ROLES WHERE ROLEID = ? AND OID = ?",array(ROLE_AA,$er['OID']));
+        while ($r4 = $role2->fetchArray())
+            $sigs[] = $r4['UID'];
         }
  
     $sigs = array_unique($sigs);
-
     if (count($sigs) >= 2)
     {
         $s2 = '';

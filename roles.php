@@ -103,6 +103,7 @@ function WriteAccess()
         <select name="role" class="input chosen-select">
         <option value="<?= ROLE_USER ?>" <?= $r['ROLEID'] == ROLE_USER ? "selected" : "" ?>>Μέλος</option>
             <option value="<?= ROLE_EDITOR ?>" <?= $r['ROLEID'] == ROLE_EDITOR ? "selected" : "" ?>>Συντάκτης</option>
+            <option value="<?= ROLE_AA ?>" <?= $r['ROLEID'] == ROLE_AA ? "selected" : "" ?>>Ακριβή Αντίγραφα</option>
             <option value="<?= ROLE_EPADMIN ?>" <?= $r['ROLEID'] == ROLE_EPADMIN ? "selected" : "" ?>>Διαχειριστής Endpoint</option>
             <?php        
         if ($u->superadmin)
@@ -167,6 +168,9 @@ function PrintRoles()
         if ($a == 0)
             continue;   
 
+            if ($u->superadmin)
+            $a = 2;
+
         printf('<tr>');
 
         printf('<td>%s</td>',$r['ID']);
@@ -174,6 +178,7 @@ function PrintRoles()
         $e1 = EPRow($r['EID']);
         $f1 = FRow($r['OID']);
         printf('<td>%s &mdash; %s %s</td>',$r['UID'],$u1['LASTNAME'],$u1['FIRSTNAME']);
+        if ($r['ROLEID'] == ROLE_AA)            printf('<td>Ακριβή Αντίγραφα</td>');
         if ($r['ROLEID'] == ROLE_EDITOR)            printf('<td>Συντάκτης</td>');
         if ($r['ROLEID'] == ROLE_EPADMIN)            printf('<td>Διαχειριστής EndPoint</td>');
         if ($r['ROLEID'] == ROLE_FADMIN)            printf('<td>Διαχειριστής Φορέα</td>');
