@@ -17,6 +17,21 @@ if (array_key_exists("shde_eggrurl",$_SESSION))
 
 //require_once "phpmailerstuff.php";
 
+function GetMail($string)
+{
+    $pattern = '/[a-z0-9_\-\+\.]+@[a-z0-9\-]+\.([a-z]{2,4})(?:\.[a-z]{2})?/i';
+    preg_match_all($pattern, $string, $matches);
+    if (count($matches) == 0)
+        return "";
+
+    $mail = $matches[0];
+        
+    if (!filter_var($mail[0], FILTER_VALIDATE_EMAIL))
+        return "";
+
+    return $mail[0];
+}
+
 
 function ShdeSend($docr,$msgr,$pdf,$pdffile)
 {
@@ -506,8 +521,9 @@ if (array_key_exists("send",$_POST))
                         $mail2 = '';
                         foreach($xe as $xx)
                         {
-                            if (filter_var($xx, FILTER_VALIDATE_EMAIL))
-                                $mail2 = $xx;
+                            $m2 = GetMail($xx);
+                            if ($m2 != "")
+                                $mail2 = $m2;
                             else
                                 $name .= $xx.' ';
                         }
@@ -528,8 +544,9 @@ if (array_key_exists("send",$_POST))
                         $mail2 = '';
                         foreach($xe as $xx)
                         {
-                            if (filter_var($xx, FILTER_VALIDATE_EMAIL))
-                                $mail2 = $xx;
+                            $m2 = GetMail($xx);
+                            if ($m2 != "")
+                                $mail2 = $m2;
                             else
                                 $name .= $xx.' ';
                         }
@@ -550,8 +567,9 @@ if (array_key_exists("send",$_POST))
                         $mail2 = '';
                         foreach($xe as $xx)
                         {
-                            if (filter_var($xx, FILTER_VALIDATE_EMAIL))
-                                $mail2 = $xx;
+                            $m2 = GetMail($xx);
+                            if ($m2 != "")
+                                $mail2 = $m2;
                             else
                                 $name .= $xx.' ';
                         }
