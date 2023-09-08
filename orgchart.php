@@ -98,8 +98,8 @@ function AddDep($j,$par,$deps = 0,$rootx = 0)
     $finalcode = $j->Code;
     if ($finalcode != $root)
         $finalcode = sprintf("%s|%s",$root,$j->Code);
-    QQ("INSERT INTO ORGCHART (CODE,NAME,ACTIVE,SDDD,PARENT,CODE2,ROOTCODE) VALUES(?,?,?,?,?,?,?)",array(
-        $finalcode,$j->Name,$j->IsActive,$j->IsSDDDNode,$par,$j->Code,$root
+    QQ("INSERT INTO ORGCHART (CODE,NAME,NAMEEN,ACTIVE,SDDD,PARENT,CODE2,ROOTCODE) VALUES(?,?,?,?,?,?,?,?)",array(
+        $finalcode,$j->Name,$j->NameEnglish,$j->IsActive,$j->IsSDDDNode,$par,$j->Code,$root
     ));
     $id = $lastRowID;
     foreach($j->ChildNodes as $dep)
@@ -166,7 +166,7 @@ function ReceiveOrgLive()
     curl_setopt($c, CURLOPT_REFERER, $siteroot);
     $r = curl_exec($c);
     $j = json_decode($r);
-//    printr($j); die;
+    //    printr($j); die; 
     QQ("DELETE FROM ORGCHART");
     QQ("BEGIN TRANSACTION");
     QQ("UPDATE ORGCHART SET ACTIVE = 0"); 

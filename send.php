@@ -25,11 +25,13 @@ function GetMail($string)
         return "";
 
     $mail = $matches[0];
-        
-    if (!filter_var($mail[0], FILTER_VALIDATE_EMAIL))
+    if (count($mail) == 0)
+        return "";
+    $m2 = $mail[0];
+    if (!filter_var($m2, FILTER_VALIDATE_EMAIL))
         return "";
 
-    return $mail[0];
+        return $m2;
 }
 
 
