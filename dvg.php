@@ -11,20 +11,92 @@ if (array_key_exists("mid",$req))
 $dr = DRow($did,1);
 if (UserAccessDocument($did,$u->uid) != 2)
     diez();
+$msg = MRow($mid,1);
 
 $erow = EPRow($dr['EID']);
 $frow = FRow($erow['OID']);
+$dirow = QQ("SELECT * FROM DVG WHERE DID = ? AND MID = ?",array($did,$mid))->fetchArray();
 $basedvgurl = 'https://diavgeia.gov.gr/opendata';
 if ($frow['DVGID'] == '10599_api' && $frow['DVGPASS'] == 'User@10599')
     $basedvgurl = 'https://test3.diavgeia.gov.gr/luminapi/opendata';
+$fdid = (int)$frow['DVGID'];
 
 function PostDvg()
 {
-    global $did,$mid,$erow,$frow,$dr,$basedvgurl;
-
+    global $did,$mid,$erow,$frow,$dr,$basedvgurl,$msg,$dirow,$fdid;
     $c = curl_init();
     $st = $basedvgurl.'/decisions';
-    $authorization = sprintf("");
+
+    $test = 0;
+
+    if ($test)
+        $st = 'http://sylviamichael.hopto.org:7010/';
+
+/*"extraFieldValues": {
+    "cpv": [
+        "42661000-7"
+    ],
+    "contestProgressType": "Πρόχειρος",
+    "manifestSelectionCriterion": "Χαμηλότερη Τιμή",
+    "manifestContractType": "Έργα",
+    "orgBudgetCode": "Τακτικός Προϋπολογισμός",
+    "estimatedAmount": {
+        "amount": 500,
+        "currency": "EUR"
+    }
+            "thematicCategoryIds": [
+            "20"
+        ],
+        "decisionDocumentBase64": "[BASE-64 ENCODED FILE]",
+        "attachments": {
+            "attach": [
+                {
+                    "description": "Συνοδευτικό έγγραφο",
+                    "filename": "attachment1.pdf",
+                    "mimeType": "application/pdf",
+                    "contentBase64": "[BASE-64 ENCODED FILE]"
+                }
+            ]
+        }
+
+},
+*/
+    $ee = '{
+        "protocolNumber": "%s",
+        "subject": "%s",
+        "decisionTypeId": "%s",
+        "issueDate": "%s",
+        "organizationId": "%s",
+        "signerIds": [
+            %s
+        ],
+        "unitIds": [
+            %s
+        ]
+    }';
+
+    $prot = unserialize($dr['PROT']);
+    $sig0 = '';
+    foreach(explode(",",$dirow['SIGNER']) as $s)
+    {
+        if (strlen($sig0))
+            $sig0 .= ',';
+        $sig0 .= sprintf('"%s"',$s);
+    }
+    $sig1 = '';
+    foreach(explode(",",$dirow['UNIT']) as $s)
+    {
+        if (strlen($sig1))
+            $sig1 .= ',';
+        $sig1 .= sprintf('"%s"',$s);
+    }
+
+    $em = sprintf($ee,
+    $prot['n'],$dr['TOPIC'],$dirow['DECISIONTYPE'],date("Y-m-d",$prot['t']).'T'.date("H:i:s.v",$prot['t']).'Z',$fdid,$sig0,$sig1
+        );
+    $x = json_decode($em);
+
+
 
     curl_setopt($c, CURLOPT_USERPWD, $frow['DVGID']  . ":" . $frow['DVGPASS'] );      
     curl_setopt_array($c, array(
@@ -32,6 +104,7 @@ function PostDvg()
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_MAXREDIRS => 10,
         CURLOPT_TIMEOUT => 30,
+        CURLOPT_POST => true, 
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_HTTPHEADER => array(
@@ -40,23 +113,46 @@ function PostDvg()
         ),
     ));
 
-/*
-        $tx = tempnam("/tmp","prf");
-        file_put_contents($tx,$msgr['MSG']);
-        $fields = array(
-        'DocumentContent' => new \CurlFile($tx, 'text/html', sprintf("%d.html",$docr['ID']))
-        ,'DocumentMetadata' => $ue);
+    $fields = json_encode($x);
 
-        */
+    $pdfmessage = GetBinary("MESSAGES","SIGNEDPDF",$msg['ID']);
+    $pwd = 0;
+    if ($dr['CLASSIFIED'] > 0)
+    {
+        $pwd = PasswordFromSession($dr['ID']);
+        if ($pwd === FALSE)
+        {
+            printf("Not decrypted.<br>");
+            return;
+        }
+    }
+
+    if ($dr['CLASSIFIED'] > 0)
+        $pdfmessage = ed($pdfmessage,$pwd,'d');
+
+    $data = array(
+            "metadata" =>  new \CurlStringFile($fields, '1.json','application/json'),
+            "decisionFile" => $test ? new \CurlStringFile("Hello", '1.txt','text/plain') : new \CurlStringFile($pdfmessage, '1.pdf','application/pdf'),
+        );
+
+    curl_setopt($c, CURLOPT_POSTFIELDS, $data);
+
+    $r = curl_exec($c);
+    printdie($r);
 
 }
 
-$fdid = (int)$frow['DVGID'];
 
 $whereret = 'eggr.php';
 if (array_key_exists("shde_eggrurl",$_SESSION))
     $whereret = $_SESSION['shde_eggrurl'];
-    
+
+if (array_key_exists("send",$_POST))
+{
+    PostDvg();
+    die;
+}
+
 if (array_key_exists("edit",$_POST))
 {
     QQ("DELETE FROM DVG WHERE DID = ? AND MID = ?",array($did,$mid));
@@ -131,6 +227,18 @@ User:<br>
 </select><br><br>
 <button class="button is-success">Submit</button>
 </form>
+
+
+<form method="POST" action="dvg.php">
+
+<input type="hidden" name="send" value="1" />
+    <input type="hidden" name="did" value="<?= $did ?>" />
+    <input type="hidden" name="mid" value="<?= $mid ?>" />
+   
+
+<button class="button is-success">SEND</button>
+</form>
+
 <script>
     chosen();
 </script>
