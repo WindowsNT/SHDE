@@ -19,7 +19,8 @@ if (array_key_exists("shde_eggrurl",$_SESSION))
 
 function GetMail($string)
 {
-    $pattern = '/[a-z0-9_\-\+\.]+@[a-z0-9\-]+\.([a-z]{2,4})(?:\.[a-z]{2})?/i';
+    $pattern ="/(?:[a-z0-9!#$%&'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/";
+//    $pattern = '/[a-z0-9_\-\+\.]+@[a-z0-9\-]+\.([a-z]{2,4})(?:\.[a-z]{2})?/i';
     preg_match_all($pattern, $string, $matches);
     if (count($matches) == 0)
         return "";
@@ -484,6 +485,7 @@ if (array_key_exists("send",$_POST))
                         $y1 = QQ("SELECT * FROM ADDRESSBOOK WHERE ID = ?",array($y))->fetchArray();
                         if ($y1)
                         {
+                            printf('Adding %s...<br>',$y1['EMAIL']);
                             $mail->addAddress($y1['EMAIL'], sprintf("%s %s",$y1['LASTNAME'],$y1['FIRSTNAME']));
                             $hasR++;
                         }
@@ -496,6 +498,7 @@ if (array_key_exists("send",$_POST))
                         $y1 = QQ("SELECT * FROM ADDRESSBOOK WHERE ID = ?",array($y))->fetchArray();
                         if ($y1)
                         {
+                            printf('Adding %s...<br>',$y1['EMAIL']);
                             $mail->addCC($y1['EMAIL'], sprintf("%s %s",$y1['LASTNAME'],$y1['FIRSTNAME']));
                             $hasR++;
                         }
@@ -508,6 +511,7 @@ if (array_key_exists("send",$_POST))
                         $y1 = QQ("SELECT * FROM ADDRESSBOOK WHERE ID = ?",array($y))->fetchArray();
                         if ($y1)
                         {
+                            printf('Adding %s...<br>',$y1['EMAIL']);
                             $mail->addBCC($y1['EMAIL'], sprintf("%s %s",$y1['LASTNAME'],$y1['FIRSTNAME']));
                             $hasR++;
                         }
@@ -531,6 +535,7 @@ if (array_key_exists("send",$_POST))
                         }
                         if (strlen($mail2))
                         {
+                            printf('Adding %s...<br>',$mail2);
                             $mail->addAddress($mail2,$name);
                             $hasR++;
                         }
@@ -554,6 +559,7 @@ if (array_key_exists("send",$_POST))
                         }
                         if (strlen($mail2))
                         {
+                            printf('Adding %s...<br>',$mail2);
                             $mail->addCC($mail2,$name);
                             $hasR++;
                         }
@@ -577,6 +583,7 @@ if (array_key_exists("send",$_POST))
                         }
                         if (strlen($mail2))
                         {
+                            printf('Adding %s...<br>',$mail2);
                             $mail->addBCC($mail2,$name);
                             $hasR++;
                         }
@@ -616,9 +623,9 @@ if (array_key_exists("send",$_POST))
         }
     }
 
-    redirect($whereret);
+//    redirect($whereret);
     die;
-}
+} 
 
 PrintHeader();
 
