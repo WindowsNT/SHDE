@@ -358,7 +358,7 @@ function OrgTree5(array& $top)
 
         $n = $r1['NAME'].' '.$r1['NAMEEN'];
         if ($r1['ACTIVE'] == 1)
-            $n = sprintf('<b>%s %s</b>',$r1['NAME'],$r1['NAMEEN']);
+            $n = sprintf('<b>%s <i>%s</i></b>',$r1['NAME'],$r1['NAMEEN']);
         if ($mustActive && $r1['ACTIVE'] == 0)
             $n = '';
         $c = $r1['CODE2'];
