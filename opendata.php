@@ -5,7 +5,6 @@ require_once "functions.php";
 $dvg_username = '10599_api';
 $dvg_password = 'User@10599';
 
-$baseurl = 'https://test3.diavgeia.gov.gr/luminapi/opendata';
 
 
 function BuildJsonFor($did,$mid)
@@ -75,8 +74,8 @@ $attachments = array(
 function svg_Send($did,$mid)
 {
     global $dvg_username,$dvg_password;
-    global $baseurl;
-    $url = $baseurl . '/decisions';
+    global $basedvgurl;
+    $url = $basedvgurl . '/decisions';
 
 
     $metadata = BuildJsonFor($did,$mid);
@@ -106,14 +105,14 @@ function svg_Send($did,$mid)
 
 function dvg_GetSites()
 {
-    global $baseurl;
-    $url = $baseurl . '/organizations/10599/details';
+    global $basedvgurl;
+    $url = $basedvgurl . '/organizations/10599/details';
 
 }
 
 function dvg_GetTypes()
 {
-    global $baseurl;
-    $url = $baseurl . '/types';
+    global $basedvgurl;
+    $url = $basedvgurl . '/types';
 
 }

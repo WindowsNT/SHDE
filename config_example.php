@@ -61,6 +61,7 @@ define('MAIL_RSA_PASSPHRASE', '');
 define('MAIL_IDENTITY', "shde@$sitedomain");
 
 
+
 // ptype: 0 in 1 out
 // txt:  description
 // user: list of receipients or senders as text

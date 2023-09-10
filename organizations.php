@@ -52,13 +52,13 @@ if (array_key_exists("c",$_POST))
         // Create
         if ($u->superadmin)
         {
-            QQ("INSERT INTO ORGANIZATIONS (NAME,NAMEEN,SHDECODE,SHDECLIENT,SHDESECRET,SHDECLIENT2,SHDESECRET2,SHDEPRODUCTION) VALUES (?,?,?,?,?,?,?,?)",array($_POST['name'],$_POST['nameen'],$_POST['code'],$_POST['client'],$_POST['secret'],$_POST['client2'],$_POST['secret2'],$_POST['prod']));
+            QQ("INSERT INTO ORGANIZATIONS (NAME,NAMEEN,SHDECODE,SHDECLIENT,SHDESECRET,SHDECLIENT2,SHDESECRET2,SHDEPRODUCTION,DVGID,DVGPASS) VALUES (?,?,?,?,?,?,?,?,?,?)",array($_POST['name'],$_POST['nameen'],$_POST['code'],$_POST['client'],$_POST['secret'],$_POST['client2'],$_POST['secret2'],$_POST['prod'],$_POST['dvgid'],$_POST['dvgpass']));
         }
     }
     else
     {
         // Edit
-        QQ("UPDATE ORGANIZATIONS SET NAME = ?,NAMEEN = ?,SHDECODE = ?,SHDECLIENT = ?,SHDESECRET = ?,SHDECLIENT2 = ?,SHDESECRET2 = ?,SHDEPRODUCTION = ? WHERE ID = ?",array($_POST['name'],$_POST['nameen'],$_POST['code'],$_POST['client'],$_POST['secret'],$_POST['client2'],$_POST['secret2'],$_POST['prod'],$_POST['c']));
+        QQ("UPDATE ORGANIZATIONS SET NAME = ?,NAMEEN = ?,SHDECODE = ?,SHDECLIENT = ?,SHDESECRET = ?,SHDECLIENT2 = ?,SHDESECRET2 = ?,SHDEPRODUCTION = ?,DVGID = ?,DVGPASS = ? WHERE ID = ?",array($_POST['name'],$_POST['nameen'],$_POST['code'],$_POST['client'],$_POST['secret'],$_POST['client2'],$_POST['secret2'],$_POST['prod'],$_POST['dvgid'],$_POST['dvgpass'],$_POST['c']));
         $loge = sprintf("shde_login_%s",$r['ID']);
         unset($_SESSION[$loge]);
         }
@@ -76,7 +76,7 @@ function CreateOrEditOrganization($oid)
         $r = QQ("SELECT * FROM ORGANIZATIONS WHERE ID = ?",array($oid))->fetchArray();
     // Has access ?
     if (!$r)
-        $r = array("ID" => 0, "NAME" => "","NAMEEN" => "","SHDECODE" => "","SHDECLIENT" => "","SHDESECRET" => "","SHDECLIENT2" => "","SHDESECRET2" => "","SHDEPRODUCTION" => 0);
+        $r = array("ID" => 0, "NAME" => "","NAMEEN" => "","SHDECODE" => "","SHDECLIENT" => "","SHDESECRET" => "","SHDECLIENT2" => "","SHDESECRET2" => "","SHDEPRODUCTION" => 0,"DVGID" => 0,"DVGPASS" => '');
 
     ?>
     <form method="POST" action="organizations.php" autocomplete="new-password">
@@ -108,6 +108,12 @@ function CreateOrEditOrganization($oid)
         <option value="0" <?= $r['SHDEPRODUCTION'] == 0 ? "selected" : "" ?>>Δοκιμαστική</option>
         <option value="1" <?= $r['SHDEPRODUCTION'] == 1 ? "selected" : "" ?>>Παραγωγική</option>
     </select>
+    <br><br><br>
+    Διαύγεια ID: <br>
+    <input type="text" class="input" name="dvgid" value="<?= $r['DVGID']?>" autocomplete="new-password" >
+    <br><br>
+    Διαύγεια Password: <br>
+    <input type="password" class="input" name="dvgpass" value="<?= $r['DVGPASS']?>"  autocomplete="new-password" >
     <br><br>
     <button class="button is-primary">Υποβολή</button>
     </form>
