@@ -4,6 +4,9 @@ require_once "functions.php";
 if (!$u)
     diez();
 
+if (!$u->superadmin)
+    diez();
+
 $did = $req['did'];
 $mid = 0;
 if (array_key_exists("mid",$req))
@@ -27,53 +30,31 @@ function PostDvg()
     $c = curl_init();
     $st = $basedvgurl.'/decisions';
 
+    $pdfmessage = GetBinary("MESSAGES","SIGNEDPDF",$msg['ID']);
+    $pwd = 0;
+    if ($dr['CLASSIFIED'] > 0)
+    {
+        $pwd = PasswordFromSession($dr['ID']);
+        if ($pwd === FALSE)
+        {
+            printf("Not decrypted.<br>");
+            return;
+        }
+    }
+
+    if ($dr['CLASSIFIED'] > 0)
+        $pdfmessage = ed($pdfmessage,$pwd,'d');
+
+
+
+
     $test = 0;
+    $method = 1;
+    $pub = 1;
 
     if ($test)
-        $st = 'http://sylviamichael.hopto.org:7010/';
+        $st = 'http://sylviamichael.hopto.org:7010/decisions';
 
-/*"extraFieldValues": {
-    "cpv": [
-        "42661000-7"
-    ],
-    "contestProgressType": "Πρόχειρος",
-    "manifestSelectionCriterion": "Χαμηλότερη Τιμή",
-    "manifestContractType": "Έργα",
-    "orgBudgetCode": "Τακτικός Προϋπολογισμός",
-    "estimatedAmount": {
-        "amount": 500,
-        "currency": "EUR"
-    }
-            "thematicCategoryIds": [
-            "20"
-        ],
-        "decisionDocumentBase64": "[BASE-64 ENCODED FILE]",
-        "attachments": {
-            "attach": [
-                {
-                    "description": "Συνοδευτικό έγγραφο",
-                    "filename": "attachment1.pdf",
-                    "mimeType": "application/pdf",
-                    "contentBase64": "[BASE-64 ENCODED FILE]"
-                }
-            ]
-        }
-
-},
-*/
-    $ee = '{
-        "protocolNumber": "%s",
-        "subject": "%s",
-        "decisionTypeId": "%s",
-        "issueDate": "%s",
-        "organizationId": "%s",
-        "signerIds": [
-            %s
-        ],
-        "unitIds": [
-            %s
-        ]
-    }';
 
     $prot = unserialize($dr['PROT']);
     $sig0 = '';
@@ -91,11 +72,51 @@ function PostDvg()
         $sig1 .= sprintf('"%s"',$s);
     }
 
-    $em = sprintf($ee,
-    $prot['n'],$dr['TOPIC'],$dirow['DECISIONTYPE'],date("Y-m-d",$prot['t']).'T'.date("H:i:s.v",$prot['t']).'Z',$fdid,$sig0,$sig1
-        );
-    $x = json_decode($em);
 
+    $ee = '{
+        "publish": "%s",
+        "protocolNumber": "%s",
+        "subject": "%s",
+        "decisionTypeId": "%s",
+        "issueDate": "%s",
+        "organizationId": "%s",
+        "extraFieldValues": {},
+        "signerIds": [
+            %s
+        ],
+        "unitIds": [
+            %s
+        ],
+        "thematicCategoryIds": [
+            "20"
+        ]
+        ';
+    if ($pub)
+    {
+        $ee .= ',
+        "decisionDocumentBase64": "';
+        $ee .= base64_encode($pdfmessage);
+        $ee .= "\"\r\n";
+    }
+    $ee .= "\r\n}";
+
+
+
+    $datef = date("Y-m-d",$prot['t']).'T'.date("H:i:s.v",$prot['t']).'Z';
+    $em = sprintf($ee,$pub ? "true" : "false",
+    $prot['n'],$dr['TOPIC'],$dirow['DECISIONTYPE'],
+        $datef,
+        //$prot['t'],
+        $fdid,$sig0,$sig1,
+    
+        );
+
+
+  
+    printr($em);
+  
+
+    $x = json_decode($em);
 
 
     curl_setopt($c, CURLOPT_USERPWD, $frow['DVGID']  . ":" . $frow['DVGPASS'] );      
@@ -108,37 +129,23 @@ function PostDvg()
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "Content-Type: multipart/form-data",
+           $method == 0 ? "Content-Type: multipart/form-data" : "Content-Type: application/json",
         ),
     ));
 
     $fields = json_encode($x);
-
-    $pdfmessage = GetBinary("MESSAGES","SIGNEDPDF",$msg['ID']);
-    $pwd = 0;
-    if ($dr['CLASSIFIED'] > 0)
-    {
-        $pwd = PasswordFromSession($dr['ID']);
-        if ($pwd === FALSE)
-        {
-            printf("Not decrypted.<br>");
-            return;
-        }
-    }
-
-    if ($dr['CLASSIFIED'] > 0)
-        $pdfmessage = ed($pdfmessage,$pwd,'d');
-
     $data = array(
             "metadata" =>  new \CurlStringFile($fields, '1.json','application/json'),
-            "decisionFile" => $test ? new \CurlStringFile("Hello", '1.txt','text/plain') : new \CurlStringFile($pdfmessage, '1.pdf','application/pdf'),
+            "decisionFile" => $test == 1 ? new \CurlStringFile("Hello", '1.txt','text/plain') : new \CurlStringFile($pdfmessage, '1.pdf','application/pdf'),
         );
 
-    curl_setopt($c, CURLOPT_POSTFIELDS, $data);
-
+    if ($method == 1)
+        curl_setopt($c, CURLOPT_POSTFIELDS, $fields);
+    else
+        curl_setopt($c, CURLOPT_POSTFIELDS, $data);
     $r = curl_exec($c);
-    printdie($r);
+    printr($r); 
+    die;
 
 }
 
@@ -193,9 +200,9 @@ require_once "output.php";
         foreach($xtypes2 as $type)
         {
             if ($type->uid == $dr['DECISIONTYPE'])
-            printf('<option value="%s" selected>%s</option>',$type->uid,$type->label);
+            printf('<option value="%s" selected>%s [%s]</option>',$type->uid,$type->label,$type->uid);
             else
-            printf('<option value="%s">%s</option>',$type->uid,$type->label);
+            printf('<option value="%s">%s [%s]</option>',$type->uid,$type->label,$type->uid);
         }
         ?>
 </select><br><br>
@@ -206,9 +213,9 @@ Unit:<br>
         foreach($o2 as $unit)
         {
             if (in_array($unit->uid,$units))
-            printf('<option value="%s" selected>%s</option>',$unit->uid,$unit->label);
+            printf('<option value="%s" selected>%s  [%s]</option>',$unit->uid,$unit->label,$unit->uid);
             else
-            printf('<option value="%s">%s</option>',$unit->uid,$unit->label);
+            printf('<option value="%s">%s  [%s]</option>',$unit->uid,$unit->label,$unit->uid);
         }
         ?>
 </select><br><br>
@@ -219,9 +226,9 @@ User:<br>
         foreach($o3 as $unit)
         {
             if (in_array($unit->uid,$signers))
-            printf('<option value="%s" selected>%s %s</option>',$unit->uid,$unit->firstName,$unit->lastName);
+            printf('<option value="%s" selected>%s %s [%s]</option>',$unit->uid,$unit->firstName,$unit->lastName,$unit->uid);
             else
-            printf('<option value="%s">%s %s</option>',$unit->uid,$unit->firstName,$unit->lastName);
+            printf('<option value="%s">%s %s [%s]</option>',$unit->uid,$unit->firstName,$unit->lastName,$unit->uid);
         }
         ?>
 </select><br><br>

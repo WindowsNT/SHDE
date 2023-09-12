@@ -295,6 +295,7 @@ if (array_key_exists("resetshde",$req))
 <li>Δυνατότητα αντιστοίχισης εικονικού email σε endpoint</li>
 <li>Κρυπτογραφημένα έγγραφα</li>
 <li>Θυρίδες για κάθε χρήστη</li>
+<li>Αρχική Συμβατότητα με Διαύγεια</li>
 <br><br>
 Ο κώδικας του SHDE είναι γραμμένος σε PHP και είναι διαθέσιμος με MIT License στο <a href="https://github.com/WindowsNT/shde" target="_blank"><b>GitHub</b></a>.
 
