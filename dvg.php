@@ -107,8 +107,35 @@ function PostDvg()
         $ee .= base64_encode($pdfmessage);
         $ee .= "\"\r\n";
     }
-    $ee .= "\r\n}";
+    // Attachments
+    $qc = QQ("SELECT * FROM ATTACHMENTS WHERE MID = ?",array($mid));
+    $atts = array();
+    while($r9 = $qc->fetchArray())
+    {
+        $atts [] = $r9;
+    }
+    if (count(($atts)))
+    {
+        $ee .= ",\r\n";
+        $ee .= ' "attachments": {';
+        foreach($atts as $att)
+        {
+            $data = GetBinary('ATTACHMENTS','DATA',$att['ID']);
+            $ee .= "\r\n";
+            $ee .= sprintf('"attach": [
+                {
+                    "description": "%s",
+                    "filename": "%s",
+                    "mimeType": "%s",
+                    "contentBase64": "%s"
+                }
+            ]',$att['DESCRIPTION'],$att['NAME'],$att['TYPE'],base64_encode($data));
+        }
 
+        $ee .= '}';
+    }
+
+    $ee .= "\r\n}";
 
 
     $datef = date("Y-m-d",$prot['t']).'T'.date("H:i:s.v",$prot['t']).'Z';
@@ -193,7 +220,7 @@ if (array_key_exists("edit",$_POST))
 
 $dr = QQ("SELECT * FROM DVG WHERE DID = ? AND MID = ?",array($did,$mid))->fetchArray();
 if (!$dr)
-    $dr = array("DID" => $did,"MID" => $mid,"JSIN" => '{}',"UNIT" => array(),"SIGNER" => array());
+    $dr = array("DID" => $did,"MID" => $mid,"JSIN" => '{}',"JSOUT" => '{}');
 
 $typesurl = $basedvgurl.'/types';
 $xtypes = json_decode(file_get_contents($typesurl));
@@ -204,13 +231,12 @@ $orgsurl = $basedvgurl.'/organizations/'.$fdid.'/details';
 $o1 = json_decode(file_get_contents($orgsurl));
 $o2 = $o1->units;
 $o3 = $o1->signers;
-//printdie($o3);
 
 $jsin = json_decode($dr['JSIN'],true);
-$jsout = json_decode($dr['JSOUT']);
 
-if (strlen($dr['JSOUT']))
+if ($dr['JSOUT'] && strlen($dr['JSOUT']) > 5)
 {
+    $jsout = json_decode($dr['JSOUT']);
     if (array_key_exists("revoke",$req))
     {
         $c = curl_init();
