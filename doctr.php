@@ -406,6 +406,10 @@ $showatt = 1;
                         if ($inc == 0)
                             {
                                 $s2 = sprintf('<br><a href="print.php?clsid=%s&pdf=1" target="_blank">Τελικό ΨΥ</a>',$r1['CLSID']);
+                                if (1)
+                                {
+                                    $s2 .= sprintf('<br><a href="dvg.php?did=%s&mid=%s">Διαύγεια</a>',$r1['ID'],$r2['ID']);                        
+                                }
                             }
                         if($r1['ADDEDSIGNERS'] && count(explode(",",$r1['ADDEDSIGNERS'])) >= 1 && $inc == 0 && $a == 2)
                         {
@@ -417,11 +421,6 @@ $showatt = 1;
                 $hasDS = 1;
             }
 
-        if (1)
-        {
-            $s2 .= sprintf('<br><a href="dvg.php?did=%s&mid=%s">Διαύγεια</a>',$r1['ID'],$r2['ID']);
-
-        }
         if ($full)
         {
             $s .= sprintf($bu,date("d/m/Y H:i:s",$r2['DATE']),$r2['MSG'],$r2['INFO'],$s2);

@@ -624,6 +624,7 @@ if (array_key_exists("send",$_POST))
     }
 
 //    redirect($whereret);
+    printf('Τέλος. <a href="%s">Πίσω</a>',$whereret);
     die;
 } 
 
