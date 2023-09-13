@@ -243,6 +243,10 @@ if (strlen($dr['JSOUT']))
         $jr = json_decode($r);
         printr($r);
     
+        $reget = file_get_contents(sprintf("%s/decisions/%s.json",$basedvgurl,$req['revoke']));
+        $jr = json_decode($reget);
+        printr($reget);
+        QQ("UPDATE DVG SET JSOUT = ? WHERE DID = ? AND MID = ?",array(json_encode($jr),$req['did'],$req['mid']));
         die("REVOKED");
     }
     require_once "output.php";
@@ -252,8 +256,18 @@ if (strlen($dr['JSOUT']))
     printf('Ημερομηνία: <b>%s</b><br>',date("n/m/Y H:i",$jsout->submissionTimestamp));
     $uu = sprintf("%s/decision/view/%s",$durl,$jsout->ada);
     printf('URL: <a href="%s" target="_blank">%s</a><br>',$uu,$uu);
-    printf('<a href="dvg.php?did=%s&mid=%s&revoke=%s">Revoke</a><br>',$did,$mid,$jsout->ada);
+    if ($jsout->status == "PUBLISHED")
+        printf('<a href="javascript:revk(%s,%s,\'%s\');">Revoke</a><br>',$did,$mid,$jsout->ada);
     printr($jsout);
+    ?>
+    <script>
+    function revk(did,mid,ada)
+    {
+        if (confirm("Σίγουρα;"))
+            window.location = "dvg.php?did=" + did + "&mid=" + mid + "&revoke=" + ada;
+    }
+    </script>
+    <?php
     die;
 }
 
