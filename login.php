@@ -116,6 +116,13 @@ if (!array_key_exists("type",$req))
         die;
     }
 
+    if ($req['type'] == "kdd")
+    {
+        $_SESSION['return_msa'] = "shde";
+        redirect($login_kdd);
+        die;
+    }
+
     if ($req['type'] == "psd")
     {
         $_SESSION['return_psd_login'] = "shde";

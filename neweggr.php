@@ -34,7 +34,10 @@ NOT_Scripts();
 if (array_key_exists("c",$_POST))
 {
     // replace 
-    $_POST['msg'] = str_replace('<span style="font-size: 1rem; font-weight: 400;">','<span>',$_POST['msg']);
+//    $_POST['msg'] = str_replace('<span style="font-size: 1rem; font-weight: 400;">','<span>',$_POST['msg']);
+//    $_POST['msg'] = str_replace('<span style="font-size: 1rem;">','<span>',$_POST['msg']);
+    $_POST['msg'] = str_replace('font-size: 1rem;',' ',$_POST['msg']);
+    
     $req['msg'] = $_POST['msg'];
     $ur = UserRow($u->uid);
     $_POST['formatting'] = serialize(array("form_recp" => $_POST['form_recp']));

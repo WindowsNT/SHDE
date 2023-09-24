@@ -167,7 +167,7 @@ function PrintHeader($back = '',$front = '')
 {
     global $u;
     global $mobile;
-    global $login_taxis,$login_demo,$login_bio,$login_psd;
+    global $login_taxis,$login_kdd,$login_demo,$login_bio,$login_psd;
     ?>
     <div class="content" style="margin:20px;">
       <?php
@@ -208,6 +208,10 @@ function PrintHeader($back = '',$front = '')
               if (strlen($login_taxis))
                   $s2 .='
                     <a href="login.php?type=taxis&return=index.php" class="dropdown-item">Taxis</a>';
+
+              if (strlen($login_kdd))
+                  $s2 .='
+                    <a href="login.php?type=kdd&return=index.php" class="dropdown-item">ΚΔΔ</a>';
 
               if (strlen($login_psd))
                   $s2 .='

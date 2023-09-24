@@ -18,6 +18,7 @@ $CanHostOthers = 0;
 
 // If login_taxis is not empty, then it points to an URL that will authenticate with taxis and return "shde_username" "shde_lastname" "shde_firstname" in the $_SESSION
 $login_taxis = '';
+$login_kdd = '';
 
 // If this is 1, then demo logins are allowed 
 $login_demo = 1;
