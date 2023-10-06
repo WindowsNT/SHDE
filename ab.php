@@ -125,9 +125,9 @@ function CreateOrEditAB($e)
         <br><br>
     <form method="POST" action="ab.php">
     <input type="hidden" name="c" value="<?= $r['ID'] ?>" />
-    Επίθετο: <br>
-    <input type="text" class="input" name="firstname" value="<?= $r['FIRSTNAME']?>" required/>
     Όνομα: <br>
+    <input type="text" class="input" name="firstname" value="<?= $r['FIRSTNAME']?>" required/>
+    Επίθετο: <br>
     <input type="text" class="input" name="lastname" value="<?= $r['LASTNAME']?>" required/>
     Email: <br>
     <input type="email" class="input" name="email" value="<?= $r['EMAIL']?>" required/>
