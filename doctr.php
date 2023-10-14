@@ -446,7 +446,7 @@ $showatt = 1;
     {
 
     }
-    if ($inc)
+//    if ($inc)
         {
             $attc = CountDB("ATTACHMENTS WHERE MID = ?",array($lastmid));
             if ($attc)
