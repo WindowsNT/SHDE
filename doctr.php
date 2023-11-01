@@ -406,7 +406,7 @@ $showatt = 1;
                         if ($inc == 0)
                             {
                                 $s2 = sprintf('<br><a href="print.php?clsid=%s&pdf=1" target="_blank">Τελικό ΨΥ</a>',$r1['CLSID']);
-                                if (1)
+                                if ($ur['CLASSIFIED'] == 0)
                                 {
                                     $s2 .= sprintf('<br><a href="dvg.php?did=%s&mid=%s">Διαύγεια</a>',$r1['ID'],$r2['ID']);                        
                                 }

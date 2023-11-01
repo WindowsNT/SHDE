@@ -302,8 +302,8 @@ if (array_key_exists("resetshde",$req))
   </div>
 
   <div class="column">
-  <br><br>Video Demo:<hr>
-  <iframe width="737" height="415" src="https://www.youtube.com/embed/_MvFNO3aOYA?si=NgiB4ymBzT3A-2pp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  <br><br>Σχετικά Videos:<hr>
+  <iframe width="737" height="415" src="https://www.youtube.com/embed//WtrOR82l_5M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     <br><br>
     <iframe width="737" height="415" src="https://www.youtube.com/embed/Sp2aaAtKgws" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     <br><br>

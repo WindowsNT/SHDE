@@ -6,6 +6,8 @@ if (!$u)
     diez();
 set_time_limit(120);
 require_once "output.php";
+$parag = 1;
+
 if ($u->superadmin)
     PrintHeader('index.php','&nbsp; <button class="button is-success autobutton block" href="orgchart.php?table=1">Μορφή Πίνακα</button> &nbsp; <button class="button is-link autobutton block" href="orgchart.php?reload=1">Ανανέωση</button><span></span>');
 else
@@ -89,6 +91,7 @@ $example_orgchart = '{
 
 function AddDep($j,$par,$deps = 0,$rootx = 0)
 {
+   global $parag; 
     global $lastRowID;
     if ($j->IsSDDDNode)
         $root = $j->Code;
@@ -98,8 +101,8 @@ function AddDep($j,$par,$deps = 0,$rootx = 0)
     $finalcode = $j->Code;
     if ($finalcode != $root)
         $finalcode = sprintf("%s|%s",$root,$j->Code);
-    QQ("INSERT INTO ORGCHART (CODE,NAME,NAMEEN,ACTIVE,SDDD,PARENT,CODE2,ROOTCODE) VALUES(?,?,?,?,?,?,?,?)",array(
-        $finalcode,$j->Name,$j->NameEnglish,$j->IsActive,$j->IsSDDDNode,$par,$j->Code,$root
+    QQ("INSERT INTO ORGCHART (CODE,NAME,NAMEEN,ACTIVE,SDDD,PARENT,CODE2,ROOTCODE,PARAG) VALUES(?,?,?,?,?,?,?,?,?)",array(
+        $finalcode,$j->Name,$j->NameEnglish,$j->IsActive,$j->IsSDDDNode,$par,$j->Code,$root,$parag
     ));
     $id = $lastRowID;
     foreach($j->ChildNodes as $dep)
@@ -112,9 +115,9 @@ function AddDep($j,$par,$deps = 0,$rootx = 0)
 $allmap = array();
 function LoadAll()
 {
-    global $allmap;
+    global $allmap,$parag;
     QQ("BEGIN TRANSACTION");
-    $q1 = QQ("SELECT * FROM ORGCHART");
+    $q1 = QQ("SELECT * FROM ORGCHART WHERE PARAG = ?",array($parag));
     while($r1 = $q1->fetchArray())
         $allmap[] = $r1;
     QQ("ROLLBACK");
@@ -138,12 +141,15 @@ function LoadAll2($parent = 0,array& $what = null)
 
 function ReceiveOrgLive()
 {
-    global $siteroot;
+    global $siteroot,$parag;
     $c = curl_init();
 
     $q1 = QQ("SELECT * FROM ORGANIZATIONS");
     while($r1 = $q1->fetchArray())
     {
+        $parag = 1;
+        if ($r1['SHDEPRODUCTION'] == 0)
+            $parag = 0;
         $base = ShdeUrl($r1['ID']).'/orgchart';
         $st = $base;
     
@@ -167,9 +173,9 @@ function ReceiveOrgLive()
     $r = curl_exec($c);
     $j = json_decode($r);
     //    printr($j); die; 
-    QQ("DELETE FROM ORGCHART");
+    QQ("DELETE FROM ORGCHART WHERE PARAG = ?",array($parag));
     QQ("BEGIN TRANSACTION");
-    QQ("UPDATE ORGCHART SET ACTIVE = 0"); 
+    QQ("UPDATE ORGCHART SET ACTIVE = 0 WHERE PARAG = ?",array($parag)); 
     foreach($j->RootNode->ChildNodes as $ch)
         AddDep($ch,0,0,0);
     QQ("COMMIT");
@@ -180,7 +186,7 @@ if (array_key_exists("reload",$req) && $u->superadmin)
     {
         ReceiveOrgLive(0);
         QQ("BEGIN TRANSACTION;");
-        $q1 = QQ("SELECT * FROM ORGCHART");
+        $q1 = QQ("SELECT * FROM ORGCHART WHERE PARAG = ?",array($parag));
         while($r1 = $q1->fetchArray())
         {
             $fn = OrgChartFullName2($r1['ID']);
@@ -209,7 +215,7 @@ function OrgTree2($top = 0)
     if ($top == 0)
     {
         $fis .= sprintf('<div class="tf-tree tf-gap lg"><ul><li><span class="tf-nc">Φορείς</span><ul>');
-        $q1 = QQ("SELECT * FROM ORGCHART WHERE PARENT = 0 ORDER BY NAME ASC");
+        $q1 = QQ("SELECT * FROM ORGCHART WHERE PARENT = 0 AND PARAG = ? ORDER BY NAME ASC",array($parag));
         while($r1 = $q1->fetchArray())
         {
             $fis .= sprintf('<li><span class="tf-nc">%s</span>', $r1['NAME']);
@@ -221,7 +227,7 @@ function OrgTree2($top = 0)
     else
     {
         $fis .= sprintf('<ul>');
-        $q2 = QQ("SELECT * FROM ORGCHART WHERE PARENT = ? ORDER BY NAME ASC",array($top));
+        $q2 = QQ("SELECT * FROM ORGCHART WHERE PARENT = ? AND PARAG = ? ORDER BY NAME ASC",array($top,$parag));
         while($r2 = $q2->fetchArray())
         {
             $fis .= sprintf('<li><span class="tf-nc">%s</span>',$r2['NAME']);
