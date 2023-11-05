@@ -6,12 +6,31 @@ if (!$u)
     diez();
 set_time_limit(120);
 require_once "output.php";
-$parag = 1;
+$parag = 0;
 
 if ($u->superadmin)
     PrintHeader('index.php','&nbsp; <button class="button is-success autobutton block" href="orgchart.php?table=1">Μορφή Πίνακα</button> &nbsp; <button class="button is-link autobutton block" href="orgchart.php?reload=1">Ανανέωση</button><span></span>');
 else
     PrintHeader('index.php','&nbsp; <button class="button is-small is-success autobutton block" href="orgchart.php?table=1">Μορφή Πίνακα</button> ');
+
+
+if (1)
+{
+    $q1 = QQ("SELECT * FROM ORGANIZATIONS");
+    while($r1 = $q1->fetchArray())
+    {
+        $parag = 1;
+        if ($r1['SHDEPRODUCTION'] == 0)
+            {
+                $parag = 0;
+                printf("Δοκιμαστικό Οργανόγραμμα<br>");
+            }
+        else
+        {
+            printf("Παραγωγικό Οργανόγραμμα<br>");
+        }
+    }
+}
 
 $example_orgchart = '{
 "Version": 1,
@@ -147,9 +166,6 @@ function ReceiveOrgLive()
     $q1 = QQ("SELECT * FROM ORGANIZATIONS");
     while($r1 = $q1->fetchArray())
     {
-        $parag = 1;
-        if ($r1['SHDEPRODUCTION'] == 0)
-            $parag = 0;
         $base = ShdeUrl($r1['ID']).'/orgchart';
         $st = $base;
     
