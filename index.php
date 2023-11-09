@@ -28,6 +28,7 @@ function SuperAdminSection()
     <button class="autobutton is-primary button block" href="endpoints.php">Endpoints</button>
     <button class="autobutton is-link button block" href="orgchart.php?reload=1">Reload Οργανόγραμμα</button>
     <button class="autobutton is-danger button block" href="impersonate.php">Impersonation</button>
+    <button class="autobutton is-link button block" href="shdeapitest.php">SHDE API Test</button>
     <button class="autobutton is-link button block" href="update.php">SHDE Update</button>
     <?php
     if (isset($alimos2))

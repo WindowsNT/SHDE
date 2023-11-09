@@ -17,6 +17,27 @@ foreach(explode(",",$req['docs']) as $did)
     $ERow = EPRow($dr['EID']);
     $FRow = FRow($ERow['OID']);
 
+    if (0)
+    {
+        $c = curl_init();
+        $statusurl = ShdeUrl($FRow['ID']).'/documents/'.$dr['SHDEPROTOCOL'];
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($c, CURLOPT_AUTOREFERER,    1);
+        curl_setopt($c, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($c, CURLOPT_URL, $statusurl );
+        curl_setopt($c, CURLOPT_REFERER, $siteroot);
+        $authorization = GetBearer($FRow['ID']);
+        if ($authorization == '')
+            return false;
+        curl_setopt($c, CURLOPT_HTTPHEADER, array(
+            $authorization  
+            ));
+        $rs = curl_exec($c);
+        $j = json_decode($rs);
+        printdie($j);
+    }
+
     $c = curl_init();
     $statusurl = ShdeUrl($FRow['ID']).'/receipts/'.$dr['SHDERECEIPT'];
     curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
@@ -50,6 +71,7 @@ foreach(explode(",",$req['docs']) as $did)
         ));
     $rs = curl_exec($c);
     $j = json_decode($rs);
+//    printdie($j);
     
     QQ("UPDATE DOCUMENTS SET SHDECHECKSENT = ? WHERE ID = ?",array($rs,$did));
 }  
