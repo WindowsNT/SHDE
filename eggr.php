@@ -894,18 +894,6 @@ function PrintMyDocuments($uid,$fid = 0,$eid = 0,$oid = 0,$full = 0,$did = 0)
 
 //$left = Search(0,0);
 $oids = OidsThatCanAccess($u->uid);
-if (array_key_exists("notif",$_SESSION))
-{
-    printf('<article class="message is-primary">
-    <div class="message-header">
-      <p>Ειδοποίηση</p>
-    </div>
-    <div class="message-body">
-    %s
-    </div>
-  </article>',$_SESSION['notif']);
-  unset($_SESSION['notif']);
-}
 
 if (count($oids) == 1)
     $left = Tree($u->uid,1,$oids[0],null,null,0,array($req['oid'],$req['eid'],$req['fid']));

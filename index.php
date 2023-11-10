@@ -219,6 +219,8 @@ if (array_key_exists("resetshde",$req))
     $loge = sprintf("shde_login_%s",$r1['ID']);
     unset($_SESSION[$loge]);
   }
+  if (array_key_exists("notif",$_SESSION))
+    unset($_SESSION['notif']);
   redirect("index.php");
 }  
 
@@ -247,7 +249,22 @@ if (array_key_exists("resetshde",$req))
         if (!array_key_exists("AccessToken",$_SESSION[$loge]))
           printf("ΚΣΗΔΕ Login στο Φορέα %s: αποτυχία <a href=\"index.php?resetshde=1\">Reload</a><br><br>",$r1['NAME']);
           else
-          printf("ΚΣΗΔΕ Login στο Φορέα %s: Access Token %s [%s] <a href=\"index.php?resetshde=1\">Reload</a><br><br>",$r1['NAME'],$_SESSION[$loge]["AccessToken"] != '' ? 'Ενεργό': 'Αποτυχία',$r1["SHDEPRODUCTION"] == 1 ? 'Παραγωγικό': 'Δοκιμαστικό');
+          {
+            $notiflist = '';
+            if (array_key_exists("notif",$_SESSION))
+              {
+                $notiflist = sprintf('<article class="message is-primary">
+                <div class="message-header">
+                  <p>Ειδοποίηση</p>
+                </div>
+                <div class="message-body">
+                %s
+                </div>
+              </article>',$_SESSION['notif']);
+            }
+
+            printf("ΚΣΗΔΕ Login στο Φορέα %s: Access Token %s [%s] <a href=\"index.php?resetshde=1\">Reload</a> %s<br><br>",$r1['NAME'],$_SESSION[$loge]["AccessToken"] != '' ? 'Ενεργό': 'Αποτυχία',$r1["SHDEPRODUCTION"] == 1 ? 'Παραγωγικό': 'Δοκιμαστικό',$notiflist);
+          }
       }
     }
   }
