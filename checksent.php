@@ -6,6 +6,11 @@ $whereret = 'eggr.php';
 if (array_key_exists("shde_eggrurl",$_SESSION))
     $whereret = $_SESSION['shde_eggrurl'];
 
+if (array_key_exists("shde_eggrurl2",$_SESSION))
+    {
+        $whereret = $_SESSION['shde_eggrurl2'];
+        unset($_SESSION['shde_eggrurl2']);
+    }
 
 foreach(explode(",",$req['docs']) as $did)
 {

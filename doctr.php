@@ -256,7 +256,7 @@ $showatt = 1;
                 {    
                     if (strlen($jj->LocalProtocolNo))
                         {
-                            $s .= sprintf('<br>[%s,%s]<br>%s<br>%s<br>',$jj->SectorCode,(int)$jj->DepartmentCode,date("j/m/Y H:i",(int)strtotime($jj->DateChanged)),$jj->LocalProtocolNo);
+                            $s .= sprintf('<br>[%s,%s]<br>%s<br>%s<br>%s<br>',$jj->SectorCode,(int)$jj->DepartmentCode,date("j/m/Y H:i",(int)strtotime($jj->DateChanged)),$jj->LocalProtocolNo,$jj->Comments);
                             $one++;
                         }
                 }

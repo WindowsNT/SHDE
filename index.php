@@ -250,10 +250,15 @@ if (array_key_exists("resetshde",$req))
           printf("ΚΣΗΔΕ Login στο Φορέα %s: αποτυχία <a href=\"index.php?resetshde=1\">Reload</a><br><br>",$r1['NAME']);
           else
           {
-            $notiflist = '';
+            $texp = strtotime($_SESSION[$loge]['ExpiresOn']);
+            if ($texp < time())
+              $notiflist = sprintf("<b>Expires %s</b>",$_SESSION[$loge]['ExpiresOn']);
+            else
+              $notiflist = sprintf("Expires %s",$_SESSION[$loge]['ExpiresOn']);
+
             if (array_key_exists("notif",$_SESSION))
               {
-                $notiflist = sprintf('<article class="message is-primary">
+                $notiflist .= sprintf('<article class="message is-primary">
                 <div class="message-header">
                   <p>Ειδοποίηση</p>
                 </div>
