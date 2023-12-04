@@ -9,7 +9,7 @@ $oid = $req['oid'];
 $a = UserAccessOID($oid,$u->uid);
 if ($a == 0)
 {
-    redirecT($ret);
+    redirect($ret);
     die;
 }
 $r = QQ("SELECT * FROM ORGANIZATIONS WHERE ID = ?",array($oid))->fetchArray();
@@ -113,13 +113,33 @@ if (array_key_exists("AccessToken",$arx))
         curl_setopt($c, CURLOPT_URL, $base );
         curl_setopt($c, CURLOPT_REFERER, $siteroot);
         $r3 = curl_exec($c);
+        //$r3 = '{"results":[{"NotificationId":"2023275863","Type":3,"SenderSectorCode":40151,"RecipientSectorCode":8200667,"DocumentProtocolNo":"20232006670000267024","VersionNumber":1,"DateCreated":"2023-12-04T13:58:41.49","MetadataJson":{"Status":"3","Departments":"0"},"Links":[{"Rel":"status","Href":"https://sddd.mindigital-shde.gr/api/v1/documents/20232006670000267024/status?version=1","Method":"GET"}]}],"NextPage":null,"PreviousPage":null}';
         $arx3 = json_decode($r3,true);
+
+
         if (count($arx3['results']))
         {
+            $url = 'checksent.php?docs=';
             $_SESSION['notif'] = sprintf('<xmp>%s</xmp>',print_r($arx3,true));
+            foreach($arx3['results'] as $res)
+            {
+                $typ = (int)$res['Type'];
+                if ($typ == 3)
+                {
+                    // Document update
+                    $q1 = QQ("SELECT * FROM DOCUMENTS WHERE SHDEPROTOCOL = ?",array($res['DocumentProtocolNo']))->fetchArray();
+                    if ($q1)
+                    {
+                        $url .= $q1['ID'];
+                        $url .= ',';
+                    }
+                }
+            }
+            $ret = $url;
         }
     }
 }
+
 else //$arx['HttpStatus'] != 200)
 {
     $_SESSION[$loge]['SideTrackingId'] = $arx['SideTrackingId']; 
