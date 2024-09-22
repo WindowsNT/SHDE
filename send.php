@@ -185,6 +185,8 @@ function ShdeSend($docr,$msgr,$pdf,$pdffile)
     $c = curl_init();
     $st = ShdeUrl($fr['ID']).'/documents';
 
+
+
     $loge = sprintf("shde_login_%s",$fr['ID']);
     if (array_key_exists($loge,$_SESSION))
     {
@@ -225,7 +227,7 @@ function ShdeSend($docr,$msgr,$pdf,$pdffile)
         $tx = tempnam("/tmp","prf");
         file_put_contents($tx,$type2c);
         $fields = array(
-        'DocumentContent' => new \CurlFile($tx, $type2m, sprintf("%d",$docr['ID']))
+        'DocumentContent' => new \CurlFile($tx, $type2m, sprintf("%d.pdf",$docr['ID']))
         ,'DocumentMetadata' => $ue);
     }
     else
@@ -379,13 +381,13 @@ if (array_key_exists("send",$_POST))
 
 
             $pdff = '';
-            if ($dr['TYPE'] == 1)
+            if ($dr['TYPE'] == 1 || $dr['TYPE'] == 2)
             {
 
             }
             else
             {
-                if (strlen($msg['SIGNEDPDF']) > 5)
+                if ($msg['SIGNEDPDF'] && strlen($msg['SIGNEDPDF']) > 5)
                 {
                     $pdfmessage = GetBinary("MESSAGES","SIGNEDPDF",$msg['ID']);
                     if ($dr['CLASSIFIED'] > 0)
@@ -401,6 +403,7 @@ if (array_key_exists("send",$_POST))
                 file_put_contents($pdff,$pdfmessage);
                 $todel[] = $pdff;
             }
+
             try
             {
                 $mail = new PHPMailer(true);
@@ -427,6 +430,11 @@ if (array_key_exists("send",$_POST))
 
                 $message = sprintf('Σας αποστέλλουμε %s μήνυμα από το σύστημα ηλεκτρονικής διακίνησης εγγράφων με θέμα: <br><b>%s</b><br>',ClassificationString($dr['CLASSIFIED'],1), $dr['TOPIC']);
 
+                if($dr['TYPE'] == 2)
+                {
+
+                }
+                else
                 if ($dr['TYPE'] == 1)   
                     $message = $msg['MSG'];                    
                 else

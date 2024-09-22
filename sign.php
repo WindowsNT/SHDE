@@ -6,7 +6,7 @@ if (!$u)
 $whereret = 'eggr.php';
 if (array_key_exists("shde_eggrurl",$_SESSION))
     $whereret = $_SESSION['shde_eggrurl'];
-set_time_limit(120);
+set_time_limit(240);
 
 if (array_key_exists("fifiz",$_FILES))
 {
