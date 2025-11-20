@@ -49,6 +49,11 @@ if (array_key_exists("c",$_POST))
     if (!array_key_exists("addedsigners",$_POST))
         $_POST['addedsigners'] = array();
 
+    if (!array_key_exists("qr",$_POST))
+        $_POST['qr'] = 0;
+    else
+        $_POST['qr'] = 1;
+
     // Passwords
     if ($_POST['classification'] > 0)
     {
@@ -81,15 +86,15 @@ if (array_key_exists("c",$_POST))
         $dr= DRow($_POST['did'],1);
         if ($dr['UID'] != $u->uid)
             $notified[] = $dr['UID'];
-        QQ("UPDATE DOCUMENTS SET ENTRYCREATED = ?,TOPIC = ?,UID = ?,FID = ?,CLASSIFIED = ?,PRIORITY = ?,TYPE = ?,CATEGORY = ?,ORIGINALITY = ?,FORMATTING = ?,DUEDATE = ?,EXPIRE = ?,COLOR = ?,ADDEDSIGNERS = ?,PDFPASSWORD = ?,SIGNERTITLES = ?,ORIGINALITYEXTRA = ? WHERE ID = ?",array(
-            time(),$_POST['topic'],$u->uid,$_POST['parent'],$_POST['classification'],$_POST['priority'],$_POST['type'],$_POST['category'],$_POST['originality'],$_POST['formatting'],strtotime($_POST['due']),strtotime($_POST['expire']),$_POST['color'],implode(",",$_POST['addedsigners']),$_POST['pdf1'],$_POST['signertitles'],$_POST['originalityextra'],$_POST['did']));
+        QQ("UPDATE DOCUMENTS SET ENTRYCREATED = ?,TOPIC = ?,UID = ?,FID = ?,CLASSIFIED = ?,PRIORITY = ?,TYPE = ?,CATEGORY = ?,ORIGINALITY = ?,FORMATTING = ?,DUEDATE = ?,EXPIRE = ?,COLOR = ?,ADDEDSIGNERS = ?,PDFPASSWORD = ?,SIGNERTITLES = ?,ORIGINALITYEXTRA = ?,QR = ? WHERE ID = ?",array(
+            time(),$_POST['topic'],$u->uid,$_POST['parent'],$_POST['classification'],$_POST['priority'],$_POST['type'],$_POST['category'],$_POST['originality'],$_POST['formatting'],strtotime($_POST['due']),strtotime($_POST['expire']),$_POST['color'],implode(",",$_POST['addedsigners']),$_POST['pdf1'],$_POST['signertitles'],$_POST['originalityextra'],$_POST['qr'],$_POST['did']));
         $fid = $_POST['parent'];
     }
     else
         {
             $fid = QQ("SELECT * FROM FOLDERS WHERE SPECIALID = ? AND EID = ?",array(FOLDER_OUTBOX,$_POST['eid']))->fetchArray()['ID'];
             $clsid = guidv4();
-            QQ("INSERT INTO DOCUMENTS (ENTRYCREATED,UID,EID,TOPIC,FID,CLASSIFIED,PRIORITY,TYPE,CATEGORY,ORIGINALITY,FORMATTING,DUEDATE,EXPIRE,CLSID,COLOR,ADDEDSIGNERS,PDFPASSWORD,SIGNERTITLES,ORIGINALITYEXTRA) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array(
+            QQ("INSERT INTO DOCUMENTS (ENTRYCREATED,UID,EID,TOPIC,FID,CLASSIFIED,PRIORITY,TYPE,CATEGORY,ORIGINALITY,FORMATTING,DUEDATE,EXPIRE,CLSID,COLOR,ADDEDSIGNERS,PDFPASSWORD,SIGNERTITLES,ORIGINALITYEXTRA,QR) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",array(
                 time(),
                 $u->uid,
                 $_POST['eid'],
@@ -108,7 +113,8 @@ if (array_key_exists("c",$_POST))
                 implode(",",$_POST['addedsigners']),
                 $_POST['pdf1'],
                 $_POST['signertitles'],
-                $_POST['originalityextra']
+                $_POST['originalityextra'],
+                $_POST['qr']
             ));
             $_POST['did'] = $lastRowID;
 
@@ -295,6 +301,8 @@ else
             }
     ?>
     <input type="text" class="input" name="topic" value="<?= $doc['TOPIC']?>" required/>
+    <br><br>
+    QR <input type="checkbox" name="qr" id="qr" <?= $doc['QR'] > 0 ? "checked" : "" ?>>
     </div>
     <div class="column">    
     Προτεραιότητα: <br>

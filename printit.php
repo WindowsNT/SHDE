@@ -1,5 +1,6 @@
 <?php
 
+require_once "qrcode.php";
 function PrintLogotypo($eid,$did,$mid)
 {
     $ep = QQ("SELECT * FROM ENDPOINTS WHERE ID = ?",array($eid))->fetchArray();
@@ -61,10 +62,26 @@ function NeedOE($did,$mid)
     return false;
 }
 
+function qr($j,$show)
+{
+    $qr = QRCode::getMinimumQRCode($j, QR_ERROR_CORRECT_LEVEL_M);
+    $im = $qr->createImage(3, 3);
+    
+    ob_start();
+    imagepng($im);
+    $imgData=ob_get_clean();
+    imagedestroy($im);
+    if ($show == 1)
+        echo '<img src="data:image/png;base64,'.base64_encode($imgData).'" />';
+    return base64_encode($imgData);
+
+}
+
 
 function PrintRight($eid,$did,$mid)
 {
     global $defform;
+    global $siteroot;
     $ep = QQ("SELECT * FROM ENDPOINTS WHERE ID = ?",array($eid))->fetchArray();
     if (!$ep)
         return "";
@@ -144,6 +161,14 @@ function PrintRight($eid,$did,$mid)
         }
     }
 
+    if ($doc['QR'] == 1)
+    {
+        $s .= '<br><br>';
+        $imgData = qr(sprintf("%s/print.php?clsid=%s&qr=1",$siteroot,$doc['CLSID']),0);
+        $s .= sprintf('<img src="data:image/png;base64,%s" />', $imgData);
+        
+    }
+    
     return $s;
 }
 
